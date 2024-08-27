@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 //imporar rutas
 
 const crearUsuario = require("./src/rutas/crearUsuarioRuta");
+const login = require("./src/rutas/loginRuta");
 
 // Conexión a la base de datos
 connectDB();
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use("/api", crearUsuario);
+app.use("/api", login);
 
 // Servidor
 app.listen(PORT, () => {
