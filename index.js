@@ -11,6 +11,14 @@ const cors = require("cors"); // Importar cors
 const app = express();
 const PORT = process.env.PORT || 3000 ;
 
+// Configuración de CORS
+app.use(cors({
+  origin: "https://tu-frontend.netlify.app", // Reemplaza con el dominio de Netlify
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+}));
+
+
 // Importar rutas
 const crearUsuario = require("./src/rutas/crearUsuarioRuta.js");
 const login = require("./src/rutas/loginRuta.js");
