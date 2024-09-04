@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000 ;
 
 // Configuración de CORS
 app.use(cors({
-  origin: "https://tu-frontend.netlify.app", // Reemplaza con el dominio de Netlify
+  origin: "https://movetogether.netlify.app/", // Reemplaza con el dominio de Netlify
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 }));
