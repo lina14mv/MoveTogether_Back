@@ -1,15 +1,13 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') }); // Cargar variables de entorno
 
-
 const express = require("express"); // Importar Express
 const mongoose = require("mongoose"); // Importar Mongoose
 const connectDB = require("./config/db.config.js"); // Importar función de conexión a la BD
-const { join } = require("path"); // Importar función join de path
 const cors = require("cors"); // Importar cors
 
 const app = express();
-const PORT = process.env.PORT || 3000 ;
+const PORT = process.env.PORT || 3000;
 
 // Importar rutas
 const crearUsuario = require("./src/rutas/crearUsuarioRuta.js");
@@ -30,9 +28,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Rutas
-app.use("/api", crearUsuario);
-app.use("/api", login);
-app.use("/api", cambiarContrasenia);
+app.use("/api/crearUsuario", crearUsuario);
+app.use("/api/login", login);
+app.use("/api/cambiarContrasenia", cambiarContrasenia);
 
 // Servidor
 app.listen(PORT, () => {
@@ -40,3 +38,5 @@ app.listen(PORT, () => {
     `--------> Backend escuchando en http://localhost:${PORT} <--------`
   );
 });
+
+module.exports = app; // Exportar app para Vercel
