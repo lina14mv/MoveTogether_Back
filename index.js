@@ -27,11 +27,6 @@ const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
 // Conexión a la base de datos
 connectDB();
 
-app.use(cors({
-  origin: "http://localhost:5173", // Reemplaza con el origen de tu frontend
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-}));
 
 // Configuración
 app.use(express.json());
