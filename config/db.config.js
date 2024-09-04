@@ -4,6 +4,10 @@ const connectDB = async () => {
   try {
     // Analizar la URI para extraer el nombre de la base de datos
     const mongoURI = process.env.MONGO_URI;
+
+    if (!mongoURI) {
+      throw new Error("La variable de entorno MONGO_URI no está definida");
+    }                            
     const dbName = mongoURI.match(/\/([^\/?]+)(\?|$)/)[1];
 
     await mongoose.connect(mongoURI);
