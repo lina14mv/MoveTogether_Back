@@ -35,7 +35,7 @@ app.use("/api", cambiarContrasenia);
 
 // Ruta para la raíz
 app.get('/', (req, res) => {
-  res.send('Bienvenido a la API de Move Together');
+  res.send('Bienvenido a la API de MoveTogether \nMás que un deporte, es una comunidad.');
 });
 
 // Manejo de rutas no encontradas
