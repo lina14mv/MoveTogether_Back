@@ -13,8 +13,21 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // Configuración de CORS
+const allowedOrigins = [
+  "http://localhost:5173", // Origen local para desarrollo
+  "https://movetogether.netlify.app" // Origen de tu frontend desplegado
+];
+
 app.use(cors({
-  origin: "https://movetogether.netlify.app", // Reemplaza con el dominio de Netlify
+  origin: function (origin, callback) {
+    // Permitir solicitudes sin origen (como las de herramientas de prueba)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'El CORS policy no permite el acceso desde este origen.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 }));
