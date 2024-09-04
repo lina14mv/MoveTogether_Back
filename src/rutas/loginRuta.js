@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const loginController = require("../controladores/login");
-const loginValidator = require("../middlewares/validacionesLogin");
+const loginController = require("../controladores/login.js");
+const loginValidator = require("../middlewares/validacionesLogin.js");
 const { validationResult } = require("express-validator");
 
 router.post("/login", loginValidator, (req, res, next) => {

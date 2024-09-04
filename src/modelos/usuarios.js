@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 // Definimos el esquema para el usuario
 const UsuarioSchema = new mongoose.Schema(
@@ -37,8 +38,8 @@ const UsuarioSchema = new mongoose.Schema(
       type: String,
       default: "default-avatar.png",
     },
-    deporte: {
-      type: String,
+    deportes: {
+      type: [String],
       required: [true, "El deporte es obligatorio"],
     },
     amigos: [
@@ -76,6 +77,8 @@ const UsuarioSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+
 
 // Creamos el modelo basado en el esquema
 const Usuario = mongoose.model("Usuario", UsuarioSchema);
