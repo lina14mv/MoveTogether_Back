@@ -1,5 +1,5 @@
 const { body } = require("express-validator");
-const usuario = require('../../src/modelos/usuarios.js');
+const Usuario = require('../../src/modelos/usuarios.js'); // Ajusta la ruta según sea necesario
 
 const usuarioValidator = [
   body("nombre")
@@ -19,7 +19,7 @@ const usuarioValidator = [
     .normalizeEmail()
     .custom(async (value) => {
       // Verificar si el correo ya existe en la base de datos
-      const emailExistente = await usuario.findOne({ email: value });
+      const emailExistente = await Usuario.findOne({ email: value });
       if (emailExistente) {
         throw new Error("Ya existe un cliente con este correo electrónico.");
       }
@@ -38,6 +38,16 @@ const usuarioValidator = [
       "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"
     ),
 
+  body("passwordConfirm")
+    .notEmpty()
+    .withMessage("La confirmación de la contraseña es obligatoria")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Las contraseñas no coinciden");
+      }
+      return true;
+    }),
+
   body("telefono")
     .optional()
     .isString()
@@ -46,7 +56,7 @@ const usuarioValidator = [
     .withMessage("Debe proporcionar un número de teléfono válido")
     .custom(async (value) => {
       // Verificar si el telefono ya existe en la base de datos
-      const telefonoExistente = await usuario.findOne({ telefono: value });
+      const telefonoExistente = await Usuario.findOne({ telefono: value });
       if (telefonoExistente) {
         throw new Error("Ya existe un cliente con este telefono electrónico.");
       }
@@ -64,7 +74,7 @@ const usuarioValidator = [
     .isIn(["Masculino", "Femenino"])
     .withMessage("Género inválido"),
 
-    body("deportes")
+  body("deportes")
     .notEmpty()
     .withMessage("Los deportes son obligatorios")
     .isArray()

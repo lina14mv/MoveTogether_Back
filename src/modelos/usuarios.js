@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 // Definimos el esquema para el usuario
 const UsuarioSchema = new mongoose.Schema(
@@ -21,6 +20,10 @@ const UsuarioSchema = new mongoose.Schema(
       type: String,
       required: [true, "La contraseña es obligatoria"],
       minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
+    },
+    codigoVerificacion: {
+      type: String,
+      required: false, // No es requerido al crear el usuario pero se agregará después
     },
     telefono: {
       type: String,
@@ -77,8 +80,6 @@ const UsuarioSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-
 
 // Creamos el modelo basado en el esquema
 const Usuario = mongoose.model("Usuario", UsuarioSchema);

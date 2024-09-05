@@ -40,11 +40,13 @@ app.use(express.urlencoded({ extended: true }));
 const crearUsuario = require("./src/rutas/crearUsuarioRuta.js");
 const login = require("./src/rutas/loginRuta.js");
 const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
+const verificarCodigo = require("./src/rutas/verificarCodigo.js");
 
 // Rutas
 app.use("/api", crearUsuario);
 app.use("/api", login);
 app.use("/api", cambiarContrasenia);
+app.use("/api", verificarCodigo);
 
 // Ruta para la raíz
 app.get('/', (req, res) => {
