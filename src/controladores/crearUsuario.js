@@ -1,34 +1,30 @@
 const Usuario = require('../../src/modelos/usuarios.js');
 const nodemailer = require('nodemailer');
-const crypto = require('crypto'); // Para generar el código de verificación
+const crypto = require('crypto');
 
-// Configuración de Nodemailer
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER, // El correo electrónico desde donde se enviarán los mensajes
-    pass: process.env.EMAIL_PASS, // La contraseña de aplicaciones o el token generado
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-// Función para crear un nuevo usuario y enviar el correo de verificación
 const crearUsuario = async (datosUsuario) => {
   try {
     console.log("Creando nuevo usuario:", datosUsuario);
 
-    // Generar un código de verificación aleatorio
-    const codigoVerificacion = crypto.randomBytes(3).toString('hex'); // Código de 6 caracteres
+    const codigoVerificacion = crypto.randomBytes(3).toString('hex');
 
-    // Crear una instancia del nuevo usuario con el código de verificación
     const nuevoUsuario = new Usuario({
       ...datosUsuario,
       codigoVerificacion,
+      verificado: false, // Usuario no verificado al inicio
+      activo: false, // Usuario inactivo hasta que verifique el email
     });
 
-    // Guardar el usuario en la base de datos
     await nuevoUsuario.save();
 
-    // Configuración del correo de verificación
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: nuevoUsuario.email,
@@ -36,7 +32,6 @@ const crearUsuario = async (datosUsuario) => {
       text: `Hola ${nuevoUsuario.nombre},\n\nTu código de verificación es: ${codigoVerificacion}\n\nIngresa este código para verificar tu cuenta.`,
     };
 
-    // Enviar el correo de verificación
     await transporter.sendMail(mailOptions);
 
     console.log("Usuario creado exitosamente:", nuevoUsuario);
@@ -48,4 +43,3 @@ const crearUsuario = async (datosUsuario) => {
 };
 
 module.exports = crearUsuario;
-

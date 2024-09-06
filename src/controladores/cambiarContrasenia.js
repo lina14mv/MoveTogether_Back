@@ -1,32 +1,46 @@
-const Login = require('../../src/modelos/usuarios.js');
+const express = require('express');
+const Usuario = require('../../src/modelos/usuarios');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
-const cambiarContrasenaController = async (req, res) => {
-  const { email, oldPassword, newPassword } = req.body;
+const router = express.Router();
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+router.post('/cambiar-contrasenia', async (req, res) => {
+  const { email } = req.body;
 
   try {
-    // Busca al usuario en la base de datos por su email
-    const usuario = await Login.findOne({ email });
+    const usuario = await Usuario.findOne({ email });
+
     if (!usuario) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    // Verifica que la contraseña anterior coincida
-    if (oldPassword !== usuario.password) {
-      console.log(`Contraseña antigua incorrecta: ${oldPassword}`);
-      return res.status(400).json({ mensaje: "Contraseña antigua incorrecta" });
-    }
-
-    // Guarda la nueva contraseña en la base de datos
-    usuario.password = newPassword;
+    const codigoCambio = crypto.randomBytes(3).toString('hex');
+    usuario.codigoCambioContrasena = codigoCambio;
     await usuario.save();
 
-    // Imprime la nueva contraseña
-    console.log(`Nueva contraseña guardada: ${newPassword}`);
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: usuario.email,
+      subject: 'Código de Cambio de Contraseña',
+      text: `Hola ${usuario.nombre},\n\nTu código para cambiar la contraseña es: ${codigoCambio}\n\nSi no solicitaste este cambio, por favor ignora este correo.`,
+    };
 
-    return res.status(200).json({ mensaje: "Contraseña cambiada exitosamente" });
+    await transporter.sendMail(mailOptions);
+
+    res.json({ mensaje: 'Código de cambio de contraseña enviado a tu correo.' });
   } catch (error) {
-    return res.status(500).json({ mensaje: "Error del servidor" });
+    console.error('Error al solicitar cambio de contraseña:', error);
+    res.status(500).json({ mensaje: 'Ocurrió un error al solicitar el cambio de contraseña' });
   }
-};
+});
 
-module.exports = cambiarContrasenaController;
+module.exports = router;

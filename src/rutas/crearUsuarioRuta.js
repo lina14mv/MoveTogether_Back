@@ -21,7 +21,7 @@ router.post("/usuarios/crear", usuarioValidator, async (req, res) => {
   }
 
   res.status(201).json({
-    mensaje: "Usuario creado exitosamente",
+    mensaje: "Usuario creado. Revisa tu correo electrónico para verificar tu cuenta.",
     usuario: resultado.usuario,
   });
 });

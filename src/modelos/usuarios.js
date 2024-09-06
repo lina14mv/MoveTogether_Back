@@ -25,6 +25,22 @@ const UsuarioSchema = new mongoose.Schema(
       type: String,
       required: false, // No es requerido al crear el usuario pero se agregará después
     },
+    codigoLogin: {
+      type: String,
+      required: false, // No es requerido al crear el usuario pero se agregará después
+    },
+    codigoCambioContrasena: { 
+      type: String,
+      required: false, // No es requerido al crear el usuario pero se agregará después
+    },
+    verificado: {
+      type: Boolean,
+      default: false, // Al crear el usuario, no está verificado
+    },
+    activo: {
+      type: Boolean,
+      default: false, // Usuario inactivo hasta que verifique su email
+    },
     telefono: {
       type: String,
       match: [/^\d{7,10}$/, "Por favor ingresa un número de teléfono válido"],
