@@ -1,8 +1,6 @@
-const express = require('express');
 const Usuario = require('../modelos/usuarios');
-const router = express.Router();
 
-router.post('/verificar-codigo', async (req, res) => {
+const verificarCodigoController = async (req, res) => {
   const { email, codigo } = req.body;
 
   try {
@@ -18,13 +16,13 @@ router.post('/verificar-codigo', async (req, res) => {
       usuario.activo = true; // Activar el usuario tras la verificación
       await usuario.save();
 
-      res.json({ mensaje: 'Código verificado exitosamente. Registro completado.' });
+      return res.json({ mensaje: 'Código verificado exitosamente. Registro completado.' });
     } else {
-      res.status(400).json({ mensaje: 'Código de verificación incorrecto' });
+      return res.status(400).json({ mensaje: 'Código de verificación incorrecto' });
     }
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error del servidor', error });
+    return res.status(500).json({ mensaje: 'Error del servidor', error });
   }
-});
+};
 
-module.exports = router;
+module.exports = verificarCodigoController;

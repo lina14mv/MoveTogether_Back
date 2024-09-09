@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 const crearUsuario = require("./src/rutas/crearUsuarioRuta.js");
 const login = require("./src/rutas/loginRuta.js");
 const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
-const verificarCodigo = require("./src/controladores/verificarCodigo.js");
+const verificarCodigo = require("./src/rutas/verificarCodigoRuta.js");
 const verificarCodigoInicio = require("./src/controladores/verificarCodigoInicio.js");
 const verificarCodigoCambiar = require("./src/rutas/verificarCodigoCambiarRuta.js");
 
