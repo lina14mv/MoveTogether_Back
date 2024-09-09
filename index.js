@@ -42,7 +42,6 @@ const crearUsuario = require("./src/rutas/crearUsuarioRuta.js");
 const login = require("./src/rutas/loginRuta.js");
 const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
 const verificarCodigo = require("./src/rutas/verificarCodigoRuta.js");
-const verificarCodigoInicio = require("./src/controladores/verificarCodigoInicio.js");
 const verificarCodigoCambiar = require("./src/rutas/verificarCodigoCambiarRuta.js");
 
 // Rutas
@@ -50,7 +49,6 @@ app.use("/api", crearUsuario);
 app.use("/api", login);
 app.use("/api", cambiarContrasenia);
 app.use("/api", verificarCodigo);
-app.use("/api", verificarCodigoInicio);
 app.use("/api", verificarCodigoCambiar);
 
 // Ruta para la raíz

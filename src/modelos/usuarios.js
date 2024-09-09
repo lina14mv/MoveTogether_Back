@@ -25,10 +25,6 @@ const UsuarioSchema = new mongoose.Schema(
       type: String,
       required: false, // No es requerido al crear el usuario pero se agregará después
     },
-    codigoLogin: {
-      type: String,
-      required: false, // No es requerido al crear el usuario pero se agregará después
-    },
     codigoCambioContrasena: { 
       type: String,
       required: false, // No es requerido al crear el usuario pero se agregará después
