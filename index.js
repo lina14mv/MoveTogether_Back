@@ -15,6 +15,7 @@ connectDB();
 // Configuración de CORS
 const allowedOrigins = [
   "http://localhost:5173", // Origen local para desarrollo
+  "http://localhost:3000",
   "https://movetogether.netlify.app" // Origen de tu frontend desplegado
 ];
 
