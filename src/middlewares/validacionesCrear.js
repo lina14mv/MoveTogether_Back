@@ -58,7 +58,7 @@ const usuarioValidator = [
       // Verificar si el telefono ya existe en la base de datos
       const telefonoExistente = await Usuario.findOne({ telefono: value });
       if (telefonoExistente) {
-        throw new Error("Ya existe un cliente con este telefono electrónico.");
+        throw new Error("Ya existe un cliente con este telefono.");
       }
       return true;
     }),
