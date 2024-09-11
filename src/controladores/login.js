@@ -16,6 +16,10 @@ const loginController = async (req, res) => {
       return res.status(401).json({ mensaje: "Contraseña incorrecta" });
     }
 
+    if (!usuario.activo) {
+      return res.status(403).json({ mensaje: 'Cuenta no verificada. Por favor, verifica tu cuenta.' });
+    }
+
     // Generar el token JWT
     const payload = { 
       id: usuario._id,
