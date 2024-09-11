@@ -38,19 +38,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Importar rutas
+//Crear
 const crearUsuario = require("./src/rutas/crearUsuarioRuta.js");
-const login = require("./src/rutas/loginRuta.js");
-const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
 const verificarCodigo = require("./src/rutas/verificarCodigoRuta.js");
+//Login
+const login = require("./src/rutas/loginRuta.js");
+//Cambiar
+const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
 const verificarCodigoCambiar = require("./src/rutas/verificarCodigoCambiarRuta.js");
 
 // Rutas
+//Crear
 app.use("/api", crearUsuario);
-app.use("/api", login);
-app.use("/api", cambiarContrasenia);
 app.use("/api", verificarCodigo);
-app.use("/api", verificarCodigoCambiar);
+//Login
+app.use("/api", login);
+//Cambiar
+app.use("/api", cambiarContrasenia);
 
+app.use("/api", verificarCodigoCambiar);
 // Ruta para la raíz
 app.get('/', (req, res) => {
   res.send('Bienvenido a la API de MoveTogether');

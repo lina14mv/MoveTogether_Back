@@ -1,7 +1,6 @@
 const { check, validationResult } = require('express-validator');
 
 const verificarCodigoValidator = [
-  check('email').isEmail().withMessage('Debe ser un correo electrónico válido'),
   check('codigo').isAlphanumeric().withMessage('El código debe ser alfanumérico'),
   (req, res, next) => {
     const errores = validationResult(req);

@@ -1,4 +1,3 @@
-// rutas/usuarios.js
 const express = require("express");
 const router = express.Router();
 const crearUsuario = require("../controladores/crearUsuario.js");
@@ -14,7 +13,7 @@ router.post("/usuarios/crear", usuarioValidator, async (req, res) => {
 
   // Si no hay errores, proceder a crear el usuario
   const datosUsuario = req.body;
-  const resultado = await crearUsuario(datosUsuario);
+  const resultado = await crearUsuario(datosUsuario, res);
 
   if (resultado.error) {
     return res.status(500).json({ error: resultado.error });

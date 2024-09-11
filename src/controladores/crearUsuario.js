@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const crearUsuario = async (datosUsuario) => {
+const crearUsuario = async (datosUsuario, res) => {
   try {
     console.log("Creando nuevo usuario:", datosUsuario);
 
