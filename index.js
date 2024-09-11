@@ -45,7 +45,6 @@ const verificarCodigo = require("./src/rutas/verificarCodigoRuta.js");
 const login = require("./src/rutas/loginRuta.js");
 //Cambiar
 const cambiarContrasenia = require("./src/rutas/cambiarContraseniaRuta.js");
-const verificarCodigoCambiar = require("./src/rutas/verificarCodigoCambiarRuta.js");
 
 // Rutas
 //Crear
@@ -55,8 +54,6 @@ app.use("/api", verificarCodigo);
 app.use("/api", login);
 //Cambiar
 app.use("/api", cambiarContrasenia);
-
-app.use("/api", verificarCodigoCambiar);
 // Ruta para la raíz
 app.get('/', (req, res) => {
   res.send('Bienvenido a la API de MoveTogether');
