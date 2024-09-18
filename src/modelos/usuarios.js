@@ -16,6 +16,7 @@ const UsuarioSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       match: [/.+\@.+\..+/, "Por favor ingresa un email válido"],
+      index: true,
     },
     password: {
       type: String,
@@ -77,8 +78,6 @@ const UsuarioSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-
 
 // Creamos el modelo basado en el esquema
 const Usuario = mongoose.model("Usuario", UsuarioSchema);
