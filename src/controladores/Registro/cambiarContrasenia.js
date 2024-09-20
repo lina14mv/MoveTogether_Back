@@ -1,15 +1,17 @@
-const Usuario = require('../../src/modelos/usuarios');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
+const Usuario = require("../../modelos/usuarios");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
+// Configuración de transporte de nodemailer
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
+// Función para enviar el código de cambio de contraseña
 const cambioContrasenia = async (req, res) => {
   const { email } = req.body;
 
@@ -17,50 +19,56 @@ const cambioContrasenia = async (req, res) => {
     const usuario = await Usuario.findOne({ email });
 
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
-    const codigoCambio = crypto.randomBytes(3).toString('hex');
+    const codigoCambio = crypto.randomBytes(3).toString("hex");
     usuario.codigoCambioContrasena = codigoCambio;
     await usuario.save();
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: usuario.email,
-      subject: 'Código de Cambio de Contraseña',
+      subject: "Código de Cambio de Contraseña",
       text: `Hola ${usuario.nombre},\n\nTu código para cambiar la contraseña es: ${codigoCambio}\n\nSi no solicitaste este cambio, por favor ignora este correo.`,
     };
 
     await transporter.sendMail(mailOptions);
 
-    res.json({ mensaje: 'Código de cambio de contraseña enviado a tu correo.' });
+    res.json({
+      mensaje: "Código de cambio de contraseña enviado a tu correo.",
+    });
   } catch (error) {
-    console.error('Error al solicitar cambio de contraseña:', error);
-    res.status(500).json({ mensaje: 'Ocurrió un error al solicitar el cambio de contraseña' });
+    console.error("Error al solicitar cambio de contraseña:", error);
+    res
+      .status(500)
+      .json({
+        mensaje: "Ocurrió un error al solicitar el cambio de contraseña",
+      });
   }
 };
 
+// Función para verificar el código de cambio de contraseña
 const verificarCodigoCambio = async (req, res) => {
   const { codigo } = req.body;
-const Login = require("../../modelos/usuarios");
-
-const cambiarContrasenaController = async (req, res) => {
-  const { email, oldPassword, newPassword } = req.body;
 
   try {
     const usuario = await Usuario.findOne({ codigoCambioContrasena: codigo });
 
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Código incorrecto' });
+      return res.status(404).json({ mensaje: "Código incorrecto" });
     }
 
-    res.json({ mensaje: 'Código verificado correctamente.' });
+    res.json({ mensaje: "Código verificado correctamente." });
   } catch (error) {
-    console.error('Error al verificar el código:', error);
-    res.status(500).json({ mensaje: 'Ocurrió un error al verificar el código' });
+    console.error("Error al verificar el código:", error);
+    res
+      .status(500)
+      .json({ mensaje: "Ocurrió un error al verificar el código" });
   }
 };
 
+// Función para cambiar la contraseña
 const nuevaContrasenia = async (req, res) => {
   const { email, nuevaContrasenia } = req.body;
 
@@ -68,13 +76,18 @@ const nuevaContrasenia = async (req, res) => {
     const usuario = await Usuario.findOne({ email });
 
     if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
     // Validar el formato de la nueva contraseña directamente en el controlador
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*+?&])[A-Za-z\d@$!%*+?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%+?&])[A-Za-z\d@$!%+?&]{8,}$/;
     if (!passwordRegex.test(nuevaContrasenia)) {
-      return res.status(400).json({ mensaje: 'La nueva contraseña no cumple con el formato requerido.' });
+      return res
+        .status(400)
+        .json({
+          mensaje: "La nueva contraseña no cumple con el formato requerido.",
+        });
     }
 
     usuario.password = nuevaContrasenia;
@@ -82,22 +95,18 @@ const nuevaContrasenia = async (req, res) => {
 
     await usuario.save();
 
-    res.json({ mensaje: 'Contraseña actualizada correctamente.' });
-    // Imprime la nueva contraseña
-    console.log(`Nueva contraseña guardada: ${newPassword}`);
-
-    return res
-      .status(200)
-      .json({ mensaje: "Contraseña cambiada exitosamente" });
+    res.json({ mensaje: "Contraseña actualizada correctamente." });
   } catch (error) {
-    console.error('Error al cambiar la contraseña:', error);
-    res.status(500).json({ mensaje: 'Ocurrió un error al cambiar la contraseña' });
+    console.error("Error al cambiar la contraseña:", error);
+    res
+      .status(500)
+      .json({ mensaje: "Ocurrió un error al cambiar la contraseña" });
   }
 };
 
+// Exportar las funciones
 module.exports = {
   cambioContrasenia,
   verificarCodigoCambio,
   nuevaContrasenia,
 };
-module.exports = cambiarContrasenaController;

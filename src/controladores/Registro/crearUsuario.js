@@ -1,4 +1,4 @@
-const Usuario = require("../../src/modelos/usuarios.js");
+const Usuario = require("../../modelos/usuarios");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
@@ -10,7 +10,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 // funciones/crearUsuario.js
-const Usuario = require("../../modelos/usuarios");
 
 const crearUsuario = async (datosUsuario, res) => {
   try {

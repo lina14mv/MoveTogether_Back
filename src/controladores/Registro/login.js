@@ -1,6 +1,5 @@
-const Usuario = require("../modelos/usuarios");
+const Usuario = require("../../modelos/usuarios");
 const { validationResult } = require("express-validator");
-const Login = require("../../modelos/usuarios");
 const jwt = require("jsonwebtoken");
 
 const loginController = async (req, res) => {
@@ -28,11 +27,9 @@ const loginController = async (req, res) => {
     }
 
     if (!usuario.activo) {
-      return res
-        .status(403)
-        .json({
-          mensaje: "Cuenta no verificada. Por favor, verifica tu cuenta.",
-        });
+      return res.status(403).json({
+        mensaje: "Cuenta no verificada. Por favor, verifica tu cuenta.",
+      });
     }
 
     // Generar el token JWT
