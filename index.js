@@ -23,6 +23,13 @@ const agregarAmigo = require("./src/rutas/Amigos/agregarAmigoRuta.js");
 const eliminarAmigo = require("./src/rutas/Amigos/eliminarAmigoRuta.js");
 const listarAmigos = require("./src/rutas/Amigos/listarAmigosRuta.js");
 
+//posts
+const crearPublicacion = require("./src/rutas/Posts/crearPublicacionRuta.js");
+const PublicacionesUsuarios = require("./src/rutas/Posts/publicacionesUsuarioRuta.js");
+const feed = require("./src/rutas/Posts/feedRuta.js");
+const eliminarPost = require("./src/rutas/Posts/eliminarPostRuta.js");
+const actualizarPost = require("./src/rutas/Posts/actualizarPostRuta.js");
+
 // Conexión a la base de datos
 connectDB();
 
@@ -77,6 +84,11 @@ app.use("/api", fotoPerfil);
 app.use("/api", agregarAmigo);
 app.use("/api", eliminarAmigo);
 app.use("/api", listarAmigos);
+app.use("/api", crearPublicacion);
+app.use("/api", PublicacionesUsuarios);
+app.use("/api", feed);
+app.use("/api", eliminarPost);
+app.use("/api", actualizarPost);
 
 // Manejo de rutas no encontradas
 app.use((req, res) => {

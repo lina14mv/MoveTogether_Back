@@ -4,7 +4,14 @@ const path = require("path");
 // Configuración del almacenamiento de multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/profile_pictures"); // Carpeta donde se guardarán las fotos
+    let folder = "uploads/profile_pictures"; // Carpeta por defecto para fotos de perfil
+
+    // Si la solicitud es para crear un post, cambiamos la carpeta de destino
+    if (req.originalUrl.includes("/posts")) {
+      folder = "uploads/post_images"; // Carpeta para las imágenes de los posts
+    }
+
+    cb(null, folder); // Definimos la carpeta en la que se guardará el archivo
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
