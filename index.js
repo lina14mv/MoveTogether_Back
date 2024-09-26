@@ -55,9 +55,20 @@ app.use(
     credentials: true,
   })
 );
+
+// Configuración de CORS para el localhost
 app.use(
   cors({
     origin: "http://localhost:5173", // Reemplaza con el origen de tu frontend
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
+
+//Por favor no borres este código, es necesario para que funcione el frontend 
+app.use(
+  cors({
+    origin: "https://movetogether.netlify.app",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
