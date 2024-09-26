@@ -13,8 +13,8 @@ const getUserProfileByEmail = async (req, res) => {
 
     // Buscar el usuario por correo electrónico
     const usuario = await Usuario.findOne({ email })
-      .select("-password") // Excluir la contraseña
-      .populate("amigos", "nombre email")
+      .select("-password -verificationCode -changePassCode  -createdAt -updatedAt -verifiedStatus") // Excluir la contraseña
+      .populate("friends", "nombre email")
       .exec();
 
     if (!usuario) {

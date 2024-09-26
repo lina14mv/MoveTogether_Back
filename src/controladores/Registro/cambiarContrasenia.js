@@ -23,7 +23,7 @@ const cambioContrasenia = async (req, res) => {
     }
 
     const codigoCambio = crypto.randomBytes(3).toString("hex");
-    usuario.codigoCambioContrasena = codigoCambio;
+    usuario.changePassCode = codigoCambio;
     await usuario.save();
 
     const mailOptions = {
@@ -50,10 +50,10 @@ const cambioContrasenia = async (req, res) => {
 
 // Función para verificar el código de cambio de contraseña
 const verificarCodigoCambio = async (req, res) => {
-  const { codigo } = req.body;
+  const { code } = req.body;
 
   try {
-    const usuario = await Usuario.findOne({ codigoCambioContrasena: codigo });
+    const usuario = await Usuario.findOne({ changePassCode: code });
 
     if (!usuario) {
       return res.status(404).json({ mensaje: "Código incorrecto" });
@@ -70,7 +70,7 @@ const verificarCodigoCambio = async (req, res) => {
 
 // Función para cambiar la contraseña
 const nuevaContrasenia = async (req, res) => {
-  const { email, nuevaContrasenia } = req.body;
+  const { email, newPassword } = req.body;
 
   try {
     const usuario = await Usuario.findOne({ email });
@@ -82,7 +82,7 @@ const nuevaContrasenia = async (req, res) => {
     // Validar el formato de la nueva contraseña directamente en el controlador
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%+?&])[A-Za-z\d@$!%+?&]{8,}$/;
-    if (!passwordRegex.test(nuevaContrasenia)) {
+    if (!passwordRegex.test(newPassword)) {
       return res
         .status(400)
         .json({
@@ -90,8 +90,8 @@ const nuevaContrasenia = async (req, res) => {
         });
     }
 
-    usuario.password = nuevaContrasenia;
-    usuario.codigoCambioContrasena = null; // Limpiar el código temporal
+    usuario.password = newPassword;
+    usuario.changePassCode = null; // Limpiar el código temporal
 
     await usuario.save();
 

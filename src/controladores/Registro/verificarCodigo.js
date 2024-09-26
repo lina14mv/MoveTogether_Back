@@ -1,11 +1,11 @@
 const Usuario = require("../../modelos/usuarios");
 
 const verificarCodigoController = async (req, res) => {
-  const { codigo } = req.body;
+  const { code } = req.body;
 
   try {
     // Buscar al usuario por el código de verificación
-    const usuario = await Usuario.findOne({ codigoVerificacion: codigo });
+    const usuario = await Usuario.findOne({ verificationCode: code });
 
     if (!usuario) {
       return res
@@ -16,9 +16,9 @@ const verificarCodigoController = async (req, res) => {
     }
 
     // Actualizar el estado del usuario
-    usuario.codigoVerificacion = null;
-    usuario.verificado = true;
-    usuario.activo = true; // Activar el usuario tras la verificación
+    usuario.verificationCode = null;
+    usuario.verifiedStatus = true;
+    usuario.status = true; // Activar el usuario tras la verificación
     await usuario.save();
 
     return res.json({

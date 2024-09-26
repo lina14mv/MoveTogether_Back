@@ -3,9 +3,9 @@ const Usuario = require("../../modelos/usuarios");
 // Obtener lista de usuarios por nombre
 const searchUsersByName = async (req, res) => {
   try {
-    const { nombre } = req.query;
+    const {fullname } = req.query;
 
-    if (!nombre) {
+    if (!fullname) {
       return res.status(400).json({
         message: "El nombre es obligatorio para realizar la búsqueda",
       });
@@ -13,10 +13,10 @@ const searchUsersByName = async (req, res) => {
 
     // Buscar usuarios cuyo nombre contenga el término buscado (case insensitive)
     const usuarios = await Usuario.find({
-      nombre: { $regex: nombre, $options: "i" },
+      fullname: { $regex: fullname, $options: "i" },
     })
-      .select("-password")
-      .populate("amigos", "nombre email")
+    .select("-password -verificationCode -changePassCode  -createdAt -updatedAt -verifiedStatus") // Excluir la contraseña
+    .populate("friends", "nombre email")
       .exec();
 
     if (usuarios.length === 0) {

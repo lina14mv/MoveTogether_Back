@@ -7,7 +7,7 @@ const { validationResult, query } = require("express-validator");
 
 // Validación de que el campo "nombre" no esté vacío
 const searchValidator = [
-  query("nombre")
+  query("fullname")
     .notEmpty()
     .withMessage("El campo nombre es obligatorio")
     .isString()

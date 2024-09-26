@@ -9,7 +9,7 @@ const validacionesCambioContrasenia = [
 ];
 
 const validacionesVerificarCodigoCambio = [
-  body('codigo')
+  body('code')
     .notEmpty()
     .withMessage('El código es obligatorio.')
     .isLength({ min: 6, max: 6 })
@@ -22,7 +22,7 @@ const validacionesNuevaContrasenia = [
     .withMessage('El email es obligatorio.')
     .isEmail()
     .withMessage('Debe proporcionar un email válido.'),
-  body('nuevaContrasenia')
+  body('newPassword')
     .notEmpty()
     .withMessage('La nueva contraseña es obligatoria.')
     .isLength({ min: 8 })
@@ -30,7 +30,7 @@ const validacionesNuevaContrasenia = [
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*+?&])[A-Za-z\d@$!%*+?&]{8,}$/
     )
-    .withMessage("La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"),
+    .withMessage("La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial solo se aceptan @$!%*+?&"),
 ];
 
 module.exports = {

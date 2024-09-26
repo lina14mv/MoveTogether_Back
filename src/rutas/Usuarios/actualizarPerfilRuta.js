@@ -7,7 +7,7 @@ const { body, validationResult } = require("express-validator");
 
 // Validaciones para los campos de actualización (puedes ajustar según sea necesario)
 const updateValidator = [
-  body("nombre")
+  body("fullname")
     .optional()
     .isString()
     .withMessage("El nombre debe ser una cadena de texto"),
@@ -15,15 +15,15 @@ const updateValidator = [
     .optional()
     .isLength({ min: 8 })
     .withMessage("La contraseña debe tener al menos 8 caracteres"),
-  body("telefono")
+  body("phoneNumber")
     .optional()
     .matches(/^\d{7,10}$/)
     .withMessage("Por favor ingresa un número de teléfono válido"),
-  body("fechaNacimiento")
+  body("birthDate")
     .optional()
     .isISO8601()
     .withMessage("La fecha de nacimiento debe ser una fecha válida"),
-  body("genero")
+  body("gender")
     .optional()
     .isIn(["Masculino", "Femenino"])
     .withMessage('El género debe ser "Masculino" o "Femenino"'),
@@ -31,11 +31,11 @@ const updateValidator = [
     .optional()
     .isString()
     .withMessage("El avatar debe ser una cadena de texto"),
-  body("deportes")
+  body("sports")
     .optional()
     .isArray()
     .withMessage("Los deportes deben ser un arreglo de cadenas de texto"),
-  body("ubicacion")
+  body("ubi")
     .optional()
     .isObject()
     .withMessage("La ubicación debe ser un objeto"),

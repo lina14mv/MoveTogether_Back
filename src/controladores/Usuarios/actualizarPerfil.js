@@ -8,14 +8,14 @@ const updateUserProfileByEmail = async (req, res) => {
 
     // Excluir los campos amigos y publicaciones de la actualización
     const allowedUpdates = [
-      "nombre",
+      "fullname",
       "password",
-      "telefono",
-      "fechaNacimiento",
-      "genero",
+      "phoneNumber",
+      "birthday",
+      "gender",
       "avatar",
-      "deportes",
-      "ubicacion",
+      "sports",
+      "ubi",
     ];
     const updateKeys = Object.keys(updates);
 

@@ -2,7 +2,7 @@ const { body } = require("express-validator");
 const Usuario = require('../../src/modelos/usuarios.js'); // Ajusta la ruta según sea necesario
 
 const usuarioValidator = [
-  body("nombre")
+  body("fullname")
     .notEmpty()
     .withMessage("El nombre es obligatorio")
     .isString()
@@ -35,7 +35,7 @@ const usuarioValidator = [
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*+?&])[A-Za-z\d@$!%*+?&]{8,}$/
     )
     .withMessage(
-      "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"
+      "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial, solo se aceptan @$!%*+?&"
     ),
 
   body("passwordConfirm")
@@ -48,7 +48,7 @@ const usuarioValidator = [
       return true;
     }),
 
-  body("telefono")
+  body("phoneNumber")
     .optional()
     .isString()
     .withMessage("El teléfono debe ser una cadena de texto")
@@ -63,23 +63,23 @@ const usuarioValidator = [
       return true;
     }),
 
-  body("fechaNacimiento")
+  body("birthDate")
     .notEmpty()
     .withMessage("La fecha de nacimiento es obligatoria")
     .isDate()
     .withMessage("Debe proporcionar una fecha válida"),
 
-  body("genero")
+  body("gender")
     .optional()
     .isIn(["Masculino", "Femenino"])
     .withMessage("Género inválido"),
 
-  body("ubicacion.pais")
+  body("ubi.country")
     .optional()
     .isString()
     .withMessage("El país debe ser una cadena de texto"),
 
-  body("ubicacion.ciudad")
+  body("ubi.city")
     .optional()
     .isString()
     .withMessage("La ciudad debe ser una cadena de texto"),

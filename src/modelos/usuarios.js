@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // Definimos el esquema para el usuario
 const UsuarioSchema = new mongoose.Schema(
   {
-    nombre: {
+    fullname: {
       type: String,
       required: [true, "El nombre es obligatorio"],
       trim: true,
@@ -22,31 +22,31 @@ const UsuarioSchema = new mongoose.Schema(
       required: [true, "La contraseña es obligatoria"],
       minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
     },
-    codigoVerificacion: {
+    verificationCode: {
       type: String,
       required: false, // No es requerido al crear el usuario pero se agregará después
     },
-    codigoCambioContrasena: { 
+    changePassCode: { 
       type: String,
       required: false, // No es requerido al crear el usuario pero se agregará después
     },
-    verificado: {
+    verifiedStatus: {
       type: Boolean,
       default: false, // Al crear el usuario, no está verificado
     },
-    activo: {
+    status: {
       type: Boolean,
       default: false, // Usuario inactivo hasta que verifique su email
     },
-    telefono: {
+    phoneNumber: {
       type: String,
       match: [/^\d{7,10}$/, "Por favor ingresa un número de teléfono válido"],
     },
-    fechaNacimiento: {
+    birthDate: {
       type: Date,
       required: [true, "La fecha de nacimiento es obligatoria"],
     },
-    genero: {
+    gender: {
       type: String,
       enum: ["Masculino", "Femenino"],
     },
@@ -54,35 +54,36 @@ const UsuarioSchema = new mongoose.Schema(
       type: String,
       default: "default-avatar.png",
     },
-    deportes: {
+    sports: {
       type: [String],
       required: [true, "El deporte es obligatorio"],
     },
-    amigos: [
+    friends: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Usuario",
       },
     ],
-    ubicacion: {
-      pais: { type: String },
-      ciudad: { type: String },
+    ubi: {
+      coutry: { type: String },
+      city: { type: String },
     },
-    publicaciones: [
+    posts: [
       {
-        titulo: { type: String, required: true },
-        contenido: { type: String, required: true },
-        imagen: { type: String },
+        title: { type: String, required: true },
+        content: { type: String, required: true },
+        image: { type: String },
+        date: {type: Date},
         likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Usuario" }],
-        comentarios: [
+        comments: [
           {
             usuario: {
               type: mongoose.Schema.Types.ObjectId,
               ref: "Usuario",
               required: true,
             },
-            contenido: { type: String, required: true },
-            fecha: { type: Date, default: Date.now },
+            content: { type: String, required: true },
+            date: { type: Date, default: Date.now },
           },
         ],
       },
