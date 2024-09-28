@@ -26,23 +26,23 @@ const agregarAmigo = async (req, res) => {
     }
 
     // Verificar si ya son amigos
-    if (usuario.amigos.includes(amigo._id)) {
+    if (usuario.friends.includes(amigo._id)) {
       return res.status(400).json({ message: "El usuario ya es tu amigo" });
     }
 
     // Agregar el amigo al array de amigos del usuario
-    usuario.amigos.push(amigo._id);
+    usuario.friends.push(amigo._id);
     await usuario.save();
 
     // Hacer populate para devolver más detalles de los amigos
     const usuarioActualizado = await Usuario.findOne({ email }).populate(
-      "amigos",
+      "friends",
       "nombre email"
     );
 
     res.status(200).json({
       message: "Amigo agregado exitosamente",
-      amigos: usuarioActualizado.amigos, // Devolver la lista actualizada de amigos con detalles
+      amigos: usuarioActualizado.friends, // Devolver la lista actualizada de amigos con detalles
     });
   } catch (error) {
     console.error("Error al agregar amigo:", error);

@@ -8,6 +8,17 @@ const UsuarioSchema = new mongoose.Schema(
       required: [true, "El nombre es obligatorio"],
       trim: true,
     },
+    username: {
+      type: String,
+      required: false,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      match: [
+        /^[a-zA-Z0-9_]{6,20}$/,
+        "El nombre de usuario debe tener entre 6 y 20 caracteres y solo puede contener letras, números y guiones bajos",
+      ]
+    },
     email: {
       type: String,
       required: [true, "El email es obligatorio"],
@@ -65,35 +76,23 @@ const UsuarioSchema = new mongoose.Schema(
       },
     ],
     ubi: {
-      coutry: { type: String },
+      country: { type: String },
       city: { type: String },
-    },
-    posts: [
-      {
-        title: { type: String, required: true },
-        content: { type: String, required: true },
-        image: { type: String },
-        date: {type: Date},
-        likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Usuario" }],
-        comments: [
-          {
-            usuario: {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: "Usuario",
-              required: true,
-            },
-            content: { type: String, required: true },
-            date: { type: Date, default: Date.now },
-          },
-        ],
-      },
-    ],
+    }
   },
   {
     collection: "Usuarios",
     timestamps: true,
   }
 );
+
+// Middleware para asignar un valor predeterminado a username si no se proporciona
+UsuarioSchema.pre('save', function(next) {
+  if (!this.username) {
+    this.username = `user_${Date.now()}`; // Asigna un valor predeterminado único
+  }
+  next();
+});
 
 // Creamos el modelo basado en el esquema
 const Usuario = mongoose.model("Usuario", UsuarioSchema);

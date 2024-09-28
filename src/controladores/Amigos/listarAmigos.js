@@ -13,7 +13,7 @@ const listarAmigosPorEmail = async (req, res) => {
 
     // Buscar el usuario por correo electrónico e incluir detalles de amigos
     const usuario = await Usuario.findOne({ email })
-      .populate("amigos", "nombre email") // Incluir detalles de amigos
+      .populate("friends", "nombre email") // Incluir detalles de amigos
       .exec();
 
     if (!usuario) {
@@ -21,7 +21,7 @@ const listarAmigosPorEmail = async (req, res) => {
     }
 
     res.status(200).json({
-      amigos: usuario.amigos, // Devolver la lista de amigos con detalles
+      amigos: usuario.friends, // Devolver la lista de amigos con detalles
     });
   } catch (error) {
     res

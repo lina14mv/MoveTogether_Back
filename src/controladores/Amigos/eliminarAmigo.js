@@ -18,24 +18,28 @@ const eliminarAmigo = async (req, res) => {
         .json({ message: "El amigo que intentas eliminar no existe" });
     }
 
+    // Verificar que no se este intentando eliminar a si mismo
+    if (email === amigoEmail) {
+      return res.status(400).json({ message: "No puedes eliminarte a ti mismo como amigo" });
+    }
     // Verificar si el amigo está en la lista de amigos del usuario
-    if (!usuario.amigos.includes(amigo._id)) {
+    if (!usuario.friends.includes(amigo._id)) {
       return res.status(400).json({ message: "El usuario no es tu amigo" });
     }
 
     // Eliminar el amigo del array de amigos del usuario
-    usuario.amigos = usuario.amigos.filter((id) => !id.equals(amigo._id));
+    usuario.friends = usuario.friends.filter((id) => !id.equals(amigo._id));
     await usuario.save();
 
     // Hacer populate para devolver más detalles de los amigos restantes
     const usuarioActualizado = await Usuario.findOne({ email }).populate(
-      "amigos",
+      "friends",
       "nombre email"
     );
 
     res.status(200).json({
       message: "Amigo eliminado exitosamente",
-      amigos: usuarioActualizado.amigos, // Devolver la lista actualizada de amigos
+      amigos: usuarioActualizado.friends, // Devolver la lista actualizada de amigos
     });
   } catch (error) {
     console.error("Error al eliminar amigo:", error);

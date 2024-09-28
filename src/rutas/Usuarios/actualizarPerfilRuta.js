@@ -11,6 +11,10 @@ const updateValidator = [
     .optional()
     .isString()
     .withMessage("El nombre debe ser una cadena de texto"),
+  body("username")
+    .optional()
+    .isString()
+    .withMessage("El nombre de usuario debe ser una cadena de texto"),
   body("password")
     .optional()
     .isLength({ min: 8 })

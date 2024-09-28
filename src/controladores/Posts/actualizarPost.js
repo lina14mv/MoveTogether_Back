@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const actualizarPublicacion = async (req, res) => {
   const { post_id } = req.params;
-  const { titulo, contenido, imagen } = req.body;
+  const { title, content, image } = req.body;
 
   // Validar ID de la publicación
   if (!mongoose.isValidObjectId(post_id)) {
@@ -18,9 +18,9 @@ const actualizarPublicacion = async (req, res) => {
     }
 
     // Actualizar los campos
-    if (titulo) post.titulo = titulo;
-    if (contenido) post.contenido = contenido;
-    if (imagen) post.imagen = imagen;
+    if (title) post.title = title;
+    if (content) post.content = content;
+    if (image) post.image = image;
 
     // Guardar cambios
     await post.save();

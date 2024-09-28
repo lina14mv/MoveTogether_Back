@@ -9,6 +9,7 @@ const updateUserProfileByEmail = async (req, res) => {
     // Excluir los campos amigos y publicaciones de la actualización
     const allowedUpdates = [
       "fullname",
+      "username",
       "password",
       "phoneNumber",
       "birthday",
@@ -34,14 +35,16 @@ const updateUserProfileByEmail = async (req, res) => {
       new: true,
       runValidators: true,
     })
-      .select("-password") // Excluir la contraseña en la respuesta
+      .select("-password -createdAt -updatedAt -posts -verificationCode -verifiedStatus") // Excluir la contraseña en la respuesta
       .exec();
 
     if (!usuario) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    res.status(200).json(usuario);
+    res.status(200).json({
+      usuario,
+      message: "Perfil de usuario actualizado exitosamente"});
   } catch (error) {
     res
       .status(500)
