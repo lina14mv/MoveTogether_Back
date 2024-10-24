@@ -44,8 +44,7 @@ const mensaje = require("./src/rutas/Mensajes/enviarMensajesRuta.js");
 connectDB();
 
 // Configuración de CORS
-// Configuración de CORS
-const allowedOrigins = [
+/*const allowedOrigins = [
   "http://localhost:5173", // Origen local para desarrollo
   "http://localhost:3000",
   "https://movetogether.netlify.app" // Origen de tu frontend desplegado
@@ -62,8 +61,13 @@ app.use(cors({
   },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
-}));
+}));*/
 
+app.use(cors({
+  origin: '*', // Permitir cualquier origen (no recomendado para producción)
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 
 // Configuración de Express
 app.use(express.json());
