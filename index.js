@@ -36,7 +36,7 @@ const eliminarPost = require("./src/rutas/Posts/eliminarPostRuta.js");
 const actualizarPost = require("./src/rutas/Posts/actualizarPostRuta.js");
 
 //mensajes
-const mensaje = require("./src/rutas/Mensajes/enviarMensajesRuta.js");
+//const mensaje = require("./src/rutas/Mensajes/enviarMensajesRuta.js");
 // const conversacion = require("./src/rutas/Mensajes/conversacionruta.js");
 // const visto = require("./src/rutas/Mensajes/vistoRuta.js");
 
@@ -44,7 +44,7 @@ const mensaje = require("./src/rutas/Mensajes/enviarMensajesRuta.js");
 connectDB();
 
 // Configuración de CORS
-/*const allowedOrigins = [
+const allowedOrigins = [
   "http://localhost:5173", // Origen local para desarrollo
   "http://localhost:3000",
   "https://movetogether.netlify.app" // Origen de tu frontend desplegado
@@ -60,12 +60,6 @@ app.use(cors({
     return callback(null, true);
   },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
-}));*/
-
-app.use(cors({
-  origin: '*', // Permitir cualquier origen (no recomendado para producción)
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
 
@@ -98,7 +92,7 @@ app.use("/api", PublicacionesUsuarios);
 app.use("/api", feed);
 app.use("/api", eliminarPost);
 app.use("/api", actualizarPost);
-app.use("/api", mensaje);
+//app.use("/api", mensaje);
 app.use("/api", uploadRuta);
 
 // Manejo de rutas no encontradas
