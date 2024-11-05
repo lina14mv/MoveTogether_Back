@@ -1,4 +1,5 @@
 const Usuario = require("../../modelos/usuarios");
+const jwt = require("jsonwebtoken");
 
 const verificarCodigoController = async (req, res) => {
   const { code } = req.body;
@@ -19,7 +20,19 @@ const verificarCodigoController = async (req, res) => {
     usuario.verificationCode = null;
     usuario.verifiedStatus = true;
     usuario.status = true; // Activar el usuario tras la verificación
+    usuario.isLoggedIn = true; // Iniciar sesión automáticamente tras la verificación
     await usuario.save();
+
+    //Token
+    const payload = {
+      id: usuario._id,
+      name: usuario.name,
+      email: usuario.email,
+      username: usuario.username,
+    };
+    const token = jwt.sign(payload, process.env.SECRET, {
+      expiresIn: "1h",
+    });
 
     return res.json({
       mensaje: "Código verificado exitosamente. Registro completado.",

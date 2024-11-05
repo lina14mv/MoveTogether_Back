@@ -75,6 +75,11 @@ const UsuarioSchema = new mongoose.Schema(
         ref: "Usuario",
       },
     ],
+    conversations: [
+      {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Conversation'
+      },
+    ],
     ubi: {
       country: { type: String },
       city: { type: String },
@@ -82,7 +87,12 @@ const UsuarioSchema = new mongoose.Schema(
     isLoggedIn: {
       type: Boolean,
       default: false, // Por defecto, el usuario no está logueado
-    }
+    },
+    unreadMessages: {
+      type: Map,
+      of: Number, // Mapa de ID de conversación a número de mensajes no leídos
+      default: {},
+    },
   },
   {
     collection: "Usuarios",
