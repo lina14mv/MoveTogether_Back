@@ -4,6 +4,7 @@ const {
   updateUserProfileByEmail,
 } = require("../../controladores/Usuarios/actualizarPerfil");
 const { body, validationResult } = require("express-validator");
+const verificarToken = require("../../middlewares/varificarToken.cjs");
 
 // Validaciones para los campos de actualización (puedes ajustar según sea necesario)
 const updateValidator = [
@@ -46,11 +47,21 @@ const updateValidator = [
 ];
 
 // Ruta para actualizar el perfil del usuario
-router.put("/actualizarPerfil/:email", updateValidator, (req, res, next) => {
+router.put("/actualizarPerfil", verificarToken, updateValidator, (req, res, next) => {
   const errors = validationResult(req);
+  
+  // Si hay errores de validación, devolverlos
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  updateUserProfileByEmail(req, res, next);
+
+  // Obtener el email del token decodificado
+  const email = req.user.email;
+
+  // Llamar a la función de actualización con el email y los datos del cuerpo de la solicitud
+  updateUserProfileByEmail(email, req.body)
+    .then(response => res.json(response))
+    .catch(error => next(error));
 });
+
 module.exports = router;

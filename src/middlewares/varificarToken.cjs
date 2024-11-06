@@ -1,25 +1,30 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const verificarToken = (req, res, next) => {
-  const token = req.header("Authorization");
-  if (!token) return res.status(401).json({ error: "Acceso denegado" });
-
-  // Verifica la existencia de JWT_SECRET
-  if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET no está definido en el entorno");
+  // Obtener el token del encabezado y eliminar el prefijo "Bearer" si está presente
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  
+  if (!token) {
+    return res.status(401).json({ mensaje: 'Acceso denegado. Token no proporcionado.' });
   }
 
-  // Verifica la estructura básica del token
-  if (token.split(".").length !== 3) {
-    return res.status(400).json({ error: "Token inválido" });
+  // Verificar si JWT_SECRET está definido en el entorno
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET no está definido en el entorno');
+  }
+
+  // Verificar la estructura del token (3 partes separadas por puntos)
+  if (token.split('.').length !== 3) {
+    return res.status(400).json({ mensaje: 'Token inválido. Formato incorrecto.' });
   }
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = verified;
-    next();
+    // Verificar el token con la clave secreta
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Almacenar los datos del usuario decodificado en req.user
+    next(); // Continuar con la solicitud
   } catch (error) {
-    res.status(400).json({ error: "Token no válido" });
+    return res.status(400).json({ mensaje: 'Token no válido.', error });
   }
 };
 
