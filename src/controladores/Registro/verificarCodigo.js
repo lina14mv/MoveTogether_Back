@@ -1,6 +1,7 @@
 const Usuario = require("../../modelos/usuarios");
 const jwt = require("jsonwebtoken");
 
+
 const verificarCodigoController = async (req, res) => {
   const { code } = req.body;
 
@@ -23,23 +24,30 @@ const verificarCodigoController = async (req, res) => {
     usuario.isLoggedIn = true; // Iniciar sesión automáticamente tras la verificación
     await usuario.save();
 
-    //Token
+ 
+    // Generar el token JWT
     const payload = {
       id: usuario._id,
-      name: usuario.name,
+      name: usuario.fullname,
       email: usuario.email,
-      username: usuario.username,
+      phoneNumber: usuario.phoneNumber,
+      avatar: usuario.avatar,
     };
-    const token = jwt.sign(payload, process.env.SECRET, {
-      expiresIn: "1h",
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
+    console.log("Token generado:", token);
+
     return res.json({
-      mensaje: "Código verificado exitosamente. Registro completado.",
+      mensaje: "Código verificado exitosamente. Registro completado.", 
+      token: token,
     });
   } catch (error) {
-    return res.status(500).json({ mensaje: "Error del servidor", error });
+    console.error(error); // Esto imprimirá el error completo en la consola para que puedas verlo
+    return res.status(500).json({ mensaje: "Error del servidor", error: error.message });
   }
+  
 };
 
 module.exports = verificarCodigoController;
