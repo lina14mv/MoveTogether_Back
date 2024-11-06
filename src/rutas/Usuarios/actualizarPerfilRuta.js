@@ -55,13 +55,14 @@ router.put("/actualizarPerfil", verificarToken, updateValidator, (req, res, next
     return res.status(400).json({ errors: errors.array() });
   }
 
-  // Obtener el email del token decodificado
-  const email = req.user.email;
+ // Si hay errores de validación, devolverlos
+ if (!errors.isEmpty()) {
+  return res.status(400).json({ errors: errors.array() });
+}
 
-  // Llamar a la función de actualización con el email y los datos del cuerpo de la solicitud
-  updateUserProfileByEmail(email, req.body)
-    .then(response => res.json(response))
-    .catch(error => next(error));
+// Llamar a la función de actualización con los datos de la solicitud
+updateUserProfileByEmail(req, res)
+  .then(response => res.json(response))
+  .catch(error => next(error));
 });
-
 module.exports = router;

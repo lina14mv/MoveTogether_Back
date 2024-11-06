@@ -3,7 +3,7 @@ const Usuario = require("../../modelos/usuarios");
 // Actualizar perfil del usuario por correo electrónico
 const updateUserProfileByEmail = async (req, res) => {
   try {
-    const { email } = req.params; // Correo electrónico del usuario a actualizar
+    const { email } = req.user.email; // Obtener el correo electrónico del token decodificado
     const updates = req.body; // Datos a actualizar
 
     // Excluir los campos amigos y publicaciones de la actualización
