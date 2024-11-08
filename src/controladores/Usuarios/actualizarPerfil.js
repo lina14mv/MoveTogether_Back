@@ -3,7 +3,7 @@ const Usuario = require("../../modelos/usuarios");
 // Actualizar perfil del usuario por correo electrónico
 const updateUserProfileByEmail = async (req, res) => {
   try {
-    const { email } = req.user.email; // Obtener el correo electrónico del token decodificado
+    const { email } = req.user; // Obtener el correo electrónico del token decodificado
     const updates = req.body; // Datos a actualizar
 
     // Excluir los campos amigos y publicaciones de la actualización
@@ -35,7 +35,7 @@ const updateUserProfileByEmail = async (req, res) => {
       new: true,
       runValidators: true,
     })
-      .select("-password -createdAt -updatedAt -posts -verificationCode -verifiedStatus") // Excluir la contraseña en la respuesta
+      .select("-password -createdAt -updatedAt -posts -verificationCode -verifiedStatus -conversations -unreadMessages ") // Excluir la contraseña en la respuesta
       .exec();
 
     if (!usuario) {
