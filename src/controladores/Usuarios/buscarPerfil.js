@@ -3,7 +3,7 @@ const Usuario = require("../../modelos/usuarios");
 // Obtener perfil del usuario por correo electrónico
 const getUserProfileByEmail = async (req, res) => {
   try {
-    const { email } = req.query;
+    const { email } = req.user;
 
     if (!email) {
       return res
