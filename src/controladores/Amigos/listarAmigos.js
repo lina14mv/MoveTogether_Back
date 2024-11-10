@@ -3,7 +3,7 @@ const Usuario = require("../../modelos/usuarios");
 // Obtener lista de amigos por correo electrónico
 const listarAmigosPorEmail = async (req, res) => {
   try {
-    const { email } = req.query;
+    const { email } = req.user;
 
     if (!email) {
       return res
