@@ -1,24 +1,20 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Definir el esquema del Post
 const PostSchema = new Schema(
   {
     content: {
       type: String,
-      required: true,
+      required: false,
     },
     image: {
       type: String,
+      required: false,
     },
     author: {
-      type: mongoose.Schema.Types.ObjectId, // Referencia a la colección de usuarios
-      ref: "Usuario",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Usuario", 
       required: true,
-    },
-    date: {
-      type: Date,
-      default: Date.now, // Fecha de creación
     },
     likes: [
       {
@@ -26,28 +22,18 @@ const PostSchema = new Schema(
         ref: "Usuario",
       },
     ],
-    comments: [
-      {
-        usuario: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Usuario",
-          required: true,
-        },
-        content: {
-          type: String,
-          required: true,
-        },
-        date: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
   },
   {
-    timestamps: true, // Esto agrega automáticamente los campos createdAt y updatedAt
+    timestamps: true, 
   }
 );
 
-// Exportar el modelo
+// Validar que haya al menos contenido o una imagen
+PostSchema.pre("validate", function (next) {
+  if (!this.content && !this.image) {
+    return next(new Error("La publicación debe contener texto, una imagen, o ambos."));
+  }
+  next();
+});
+
 module.exports = mongoose.model("Post", PostSchema);

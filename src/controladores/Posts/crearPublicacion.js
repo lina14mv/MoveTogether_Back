@@ -1,36 +1,24 @@
-const Usuario = require("../../modelos/usuarios");
 const Post = require("../../modelos/post");
 const mongoose = require("mongoose");
 
 // Controlador para crear una nueva publicación
 exports.createPost = async (req, res) => {
   try {
-    const { content, author } = req.body;
+    const { content, image } = req.body;
+    const author = req.user.id; // Obtener el ID del autor desde req.user
 
     // Verificar que al menos haya contenido o una imagen
-    if (!content && (!req.files || req.files.length === 0)) {
+    if (!content && !image) {
       return res
         .status(400)
         .json({ message: "Se requiere contenido o una imagen para la publicación." });
-    }
-
-    // Validar si el autor es un ObjectId válido
-    if (!mongoose.isValidObjectId(author)) {
-      return res.status(400).json({ message: "ID de autor no válido." });
-    }
-
-    // Verificar que el usuario exista
-    const usuario = await Usuario.findById(author);
-    if (!usuario) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
     }
 
     // Crear un nuevo post
     const newPost = new Post({
       content,
       author,
-      image: req.files && req.files.length > 0 ? req.files[0].path : null,
-      date: new Date()
+      image, // Guardar el enlace proporcionado por Cloudinary
     });
 
     // Guardar el post en la base de datos

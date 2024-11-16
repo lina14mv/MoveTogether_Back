@@ -25,6 +25,8 @@ const actualizarPost = require("./Posts/actualizarPostRuta.js");
 //Mensajes
 const chat = require("./Chat/chatRuta.js");
 const conversacion = require("./Chat/conversacionRuta.js");
+const ultimoMensaje = require("./Chat/ultimoMensajeRuta.js");
+
 
 //Amigos
 const agregarAmigo = require("./Amigos/agregarAmigoRuta.js");
@@ -55,6 +57,8 @@ router.use("/api", actualizarPost);
 router.use("/api", uploadRuta);
 router.use("/api", chat);
 router.use("/api", conversacion);
+router.use("/api", ultimoMensaje);
+
 
 
 module.exports = router;

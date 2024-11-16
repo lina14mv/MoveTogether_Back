@@ -3,7 +3,17 @@ const router = express.Router();
 const {
   obtenerPublicaciones,
 } = require("../../controladores/Posts/publicacionesUsuario");
+const verificarToken = require("../../middlewares/varificarToken.cjs");
+const { validationResult } = require("express-validator");
 
-router.get("/usuarios/:userId/publicaciones", obtenerPublicaciones);
+router.get("/usuarios/publicaciones", verificarToken, (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  obtenerPublicaciones(req, res);
+});
 
 module.exports = router;
