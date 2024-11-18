@@ -3,7 +3,7 @@ const Usuario = require("../../modelos/usuarios");
 const Post = require("../../modelos/post");
 
 exports.obtenerFeed = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user.id;
 
   // Validar si el userId es un ObjectId válido
   if (!mongoose.Types.ObjectId.isValid(userId)) {
