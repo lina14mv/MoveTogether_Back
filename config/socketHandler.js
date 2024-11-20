@@ -5,6 +5,8 @@ const Usuario = require("../src/modelos/usuarios"); // Ajusta la ruta si es nece
 const Conversation = require("../src/modelos/conversation"); // Ajusta la ruta si es necesario
 
 const socketHandler = (server, allowedOrigins) => {
+  // Variable para rastrear usuarios conectados
+  const connectedUsers = new Map();
   const io = new Server(server, {
     cors: {
       origin: allowedOrigins,
@@ -12,7 +14,7 @@ const socketHandler = (server, allowedOrigins) => {
       credentials: true,
     },
     connectionStateRecovery: {
-      maxDisconnectionDuration: 2 * 60 * 1000, // 2 minutos
+      maxDisconnectionDuration: 60 * 60 * 1000, // 2 minutos
       skipMiddlewares: true,
     },
   });
@@ -27,14 +29,22 @@ const socketHandler = (server, allowedOrigins) => {
     let currentUserId;
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Cambia por tu clave secreta
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); 
       currentUserId = decoded.id;
       console.log("Usuario autenticado:", currentUserId);
+      connectedUsers.set(currentUserId, socket.id);
+      console.log(`Usuario ${currentUserId} conectado en el socket ${socket.id}`);
     } catch (error) {
       console.error("Error al decodificar el token:", error);
       socket.emit("error", "Token inválido");
       return;
     }
+
+    // Manejar desconexiones
+    socket.on("disconnect", () => {
+      connectedUsers.delete(currentUserId);
+      console.log(`Usuario ${currentUserId} desconectado.`);
+    });
 
     // Evento para unirse a una conversación
     socket.on("joinConversation", async (friendId) => {
@@ -96,65 +106,86 @@ const socketHandler = (server, allowedOrigins) => {
       }
     });
 
-    // Función para enviar mensajes
-    const sendMessage = async (socket, data) => {
 
-      console.log("Datos recibidos en el servidor:", data);
-
-  const { conversationId, message } = data;
-
-  // Validar los datos
-  if (!conversationId || !message || !message.sender || !message.recipient || !message.content) {
-    console.error("Datos insuficientes para enviar mensaje. Faltan uno o más campos:", {
-      conversationId,
-      message,
-    });
-    return;
-  }
-
-  try {
-    // Buscar conversación por ID
-    let conversation = await Conversation.findById(conversationId);
-
-    // Si no existe, crear una nueva conversación
-    if (!conversation) {
-      console.log("La conversación no existe. Creando una nueva.");
-      conversation = new Conversation({
-        participants: [message.sender, message.recipient],
-        messages: [],
-        lastMessage: "",
-      });
-      await conversation.save();
-    }
-
-    // Crear el nuevo mensaje
-    const newMessage = {
-      sender: message.sender,
-      recipient: message.recipient,
-      content: message.content,
-      type: message.type || "text", // Por defecto 'text'
-      timestamp: message.timestamp || Date.now(),
+    // Función para guardar el mensaje en la conversación
+    const saveMessage = async (conversation, message) => {
+      conversation.messages.push(message); // Agregar el mensaje a la conversación
+      console.log("Mensaje a guardar en la conversación:", message);
+      conversation.lastMessage = message.content; // Actualizar el último mensaje
+      await conversation.save(); // Guardar los cambios
     };
 
-    // Guardar el mensaje en la conversación
-    await saveMessage(conversation, newMessage);
+     // Función para enviar mensajes
+     const sendMessage = async (socket, data) => {
+      console.log("Datos recibidos en el servidor:", data);
 
-    // Emitir el mensaje al remitente y al destinatario
-    socket.emit("receiveMessage", newMessage); // Para el remitente
-    socket.to(message.recipient).emit("receiveMessage", newMessage); // Para el destinatario
-    socket.to(conversation._id).emit("receiveMessage", newMessage); // Para todos los participantes de la conversación
-  } catch (error) {
-    console.error("Error al enviar el mensaje:", error);
-  }
-};
+      const { conversationId, message } = data;
 
-// Función para guardar el mensaje en la conversación
-const saveMessage = async (conversation, message) => {
-  conversation.messages.push(message); // Agregar el mensaje a la conversación
-  console.log("Mensaje a guardar en la conversación:", message);
-  conversation.lastMessage = message.content; // Actualizar el último mensaje
-  await conversation.save(); // Guardar los cambios
-};
+      // Validar los datos
+      if (
+        !conversationId ||
+        !message ||
+        !message.sender ||
+        !message.recipient ||
+        !message.content
+      ) {
+        console.error(
+          "Datos insuficientes para enviar mensaje. Faltan uno o más campos:",
+          {
+            conversationId,
+            message,
+          }
+        );
+        return;
+      }
+
+      try {
+        // Buscar conversación por ID
+        let conversation = await Conversation.findById(conversationId);
+
+        // Si no existe, crear una nueva conversación
+        if (!conversation) {
+          console.log("La conversación no existe. Creando una nueva.");
+          conversation = new Conversation({
+            participants: [message.sender, message.recipient],
+            messages: [],
+            lastMessage: "",
+          });
+          await conversation.save();
+        }
+
+        // Crear el nuevo mensaje
+        const newMessage = {
+          sender: message.sender,
+          recipient: message.recipient,
+          content: message.content,
+          type: message.type || "text", // Por defecto 'text'
+          timestamp: message.timestamp || Date.now(),
+        };
+
+        // Guardar el mensaje en la conversación
+        await saveMessage(conversation, newMessage);
+
+        // Emitir el mensaje al remitente y al destinatario
+        const recipientSocketId = connectedUsers.get(message.recipient);; // Buscar socket del destinatario
+
+        if (recipientSocketId) {
+          // Enviar mensaje al destinatario
+          socket.to(recipientSocketId).emit("receiveMessage", newMessage);
+        } else {
+          console.warn(
+            `El destinatario ${message.recipient} no está conectado.`
+          );
+        }
+
+        // Enviar mensaje al remitente (para confirmar)
+        socket.emit("receiveMessage", newMessage);
+
+        console.log("Mensaje enviado correctamente.", newMessage);
+      } catch (error) {
+        console.error("Error al enviar el mensaje:", error);
+      }
+    };
 
     // Escuchar evento de enviar mensaje
     socket.on("sendMessage", (data) => sendMessage(socket, data));

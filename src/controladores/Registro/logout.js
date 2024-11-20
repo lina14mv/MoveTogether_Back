@@ -2,7 +2,7 @@ const Usuario = require("../../modelos/usuarios");
 const { addToBlacklist } = require("../../../config/blacklist");
 
 const logoutController = async (req, res) => {
-  const { email } = req.body;  // Mantén el email durante las pruebas
+  const  email  = req.user.email;  // Mantén el email durante las pruebas
   const authHeader = req.header('Authorization');
   if (!authHeader) {
     return res.status(401).json({ mensaje: 'No se proporcionó el token de autorización' });
