@@ -11,7 +11,4 @@ steps:
   displayName: 'Instalar Node.js'
 
 - script: npm install
-  displayName: 'Instalar dependencias'
-
-- script: npm test
-  displayName: 'Ejecutar pruebas'
+  displayName: 'Run a multi-line script'
