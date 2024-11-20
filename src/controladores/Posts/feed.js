@@ -28,7 +28,7 @@ exports.obtenerFeed = async (req, res) => {
     const amigosIds = usuario.friends.map(amigo => amigo._id);
 
     // Buscar las publicaciones de los amigos en el modelo Post
-    const publicacionesFeed = await Post.find({ author: { $in: amigosIds } });
+    const publicacionesFeed = await Post.find({ author: { $in: amigosIds } }).populate('author', 'fullname avatar username');
 
     // Verificar si hay publicaciones en el feed
     if (publicacionesFeed.length === 0) {

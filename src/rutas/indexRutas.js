@@ -21,6 +21,7 @@ const PublicacionesUsuarios = require("./Posts/publicacionesUsuarioRuta.js");
 const feed = require("./Posts/feedRuta.js");
 const eliminarPost = require("./Posts/eliminarPostRuta.js");
 const actualizarPost = require("./Posts/actualizarPostRuta.js");
+const likePost = require("./Posts/likeRuta.js");
 
 //Mensajes
 const chat = require("./Chat/chatRuta.js");
@@ -51,6 +52,7 @@ router.use("/api", eliminarAmigo);
 router.use("/api", listarAmigos);
 router.use("/api", crearPublicacion);
 router.use("/api", PublicacionesUsuarios);
+router.use("/api", likePost);
 router.use("/api", feed);
 router.use("/api", eliminarPost);
 router.use("/api", actualizarPost);

@@ -12,7 +12,7 @@ exports.obtenerPublicaciones = async (req, res) => {
 
   try {
     // Buscar publicaciones del usuario
-    const publicaciones = await Post.find({ author: userId });
+    const publicaciones = await Post.find({ author: userId }).populate("author", "fullname avatar username");
 
     // Devolver las publicaciones encontradas
     return res.status(200).json({ publicaciones });

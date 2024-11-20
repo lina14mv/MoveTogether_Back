@@ -1,7 +1,8 @@
-// server/socketHandler.js
 const { Server } = require("socket.io");
-const Conversation = require("../src/modelos/conversation");
-const Usuario = require("../src/modelos/usuarios");
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const Usuario = require("../src/modelos/usuarios"); // Ajusta la ruta si es necesario
+const Conversation = require("../src/modelos/conversation"); // Ajusta la ruta si es necesario
 
 const socketHandler = (server, allowedOrigins) => {
   const io = new Server(server, {
@@ -16,120 +17,146 @@ const socketHandler = (server, allowedOrigins) => {
     },
   });
 
-  console.log("Configuración de Socket.IO completada.");
+  console.log("Socket.IO configurado.");
 
   io.on("connection", (socket) => {
+    console.log("Usuario conectado:", socket.id);
+
+    // Decodificar el token y obtener el ID del usuario
+    const token = socket.handshake.auth.token;
+    let currentUserId;
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Cambia por tu clave secreta
+      currentUserId = decoded.id;
+      console.log("Usuario autenticado:", currentUserId);
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      socket.emit("error", "Token inválido");
+      return;
+    }
+
     // Evento para unirse a una conversación
-    socket.on("joinConversation", async (friendId, currentUserId) => {
+    socket.on("joinConversation", async (friendId) => {
+      console.log("Evento 'joinConversation' recibido. Friend ID:", friendId);
+
       try {
-        // Verifica que ambos usuarios existan
         const currentUser = await Usuario.findById(currentUserId);
         const friend = await Usuario.findById(friendId);
 
         if (!currentUser || !friend) {
-          return socket.emit("error", "Uno o ambos usuarios no existen.");
+          console.error("Uno o ambos usuarios no existen.");
+          return socket.emit("error", "Usuarios no encontrados.");
         }
 
-        // Buscar o crear la conversación entre los dos usuarios
+        // Convertir los IDs a ObjectId antes de usarlos en la consulta
+        const currentUserObjectId = new mongoose.Types.ObjectId(currentUserId);
+        const friendObjectId = new mongoose.Types.ObjectId(friendId);
+
+        // Buscar o crear conversación
         let conversation = await Conversation.findOne({
-          participants: { $all: [currentUserId, friendId] },
-        })
-          .populate("messages.sender")
-          .populate("messages.recipient");
+          participants: { $all: [currentUserObjectId, friendObjectId] },
+        }).populate({
+          path: "messages",
+          populate: [
+            { path: "sender", select: "name avatar" },
+            { path: "recipient", select: "name avatar" },
+          ],
+        });
 
-        if (conversation) {
-          socket.join(conversation._id);
-          socket.emit("conversationJoined", {
-            conversationId: conversation._id,
-          });
-          socket.emit("previousMessages", conversation.messages);
-          console.log(
-            `Usuario ${socket.id} se unió a la conversación ${conversation._id}`
-          );
-
-          // Resetear el conteo de mensajes no leídos
-          await Usuario.findByIdAndUpdate(currentUserId, {
-            $set: { [`unreadMessages.${conversation._id}`]: 0 },
-          });
-        } else {
+        if (!conversation) {
           conversation = new Conversation({
-            participants: [currentUserId, friendId],
+            participants: [currentUserObjectId, friendObjectId],
             messages: [],
             lastMessage: "",
           });
           await conversation.save();
 
-          await Usuario.findByIdAndUpdate(currentUserId, {
-            $push: { conversations: conversation._id },
-          });
-          await Usuario.findByIdAndUpdate(friendId, {
-            $push: { conversations: conversation._id },
-          });
-
-          socket.join(conversation._id);
-          socket.emit("conversationJoined", {
-            conversationId: conversation._id,
-          });
           console.log(
-            `Nueva conversación creada entre ${currentUserId} y ${friendId} con ID: ${conversation._id}`
+            `Nueva conversación creada entre ${currentUserId} y ${friendId}`
           );
+
+          await Usuario.findByIdAndUpdate(currentUserObjectId, {
+            $push: { conversations: conversation._id },
+          });
+          await Usuario.findByIdAndUpdate(friendObjectId, {
+            $push: { conversations: conversation._id },
+          });
         }
+
+        console.log("Conversación encontrada o creada.");
+
+        // Unir al usuario a la sala
+        socket.join(conversation._id);
+        socket.emit("conversationJoined", { conversationId: conversation._id });
+        socket.emit("previousMessages", conversation.messages);
       } catch (error) {
-        console.error(`Error al gestionar la conversación: ${error}`);
+        console.error(`Error al gestionar la conversación: ${error.message}`);
+        socket.emit("error", "Error al gestionar la conversación.");
       }
     });
 
-    // Evento para enviar un mensaje
-    // Dentro del evento "sendMessage" en server/socketHandler.js
-    socket.on("sendMessage", async (messageData) => {
-      const { conversationId, message } = messageData;
+    // Función para enviar mensajes
+    const sendMessage = async (socket, data) => {
 
-      try {
-        console.log(
-          `Intentando enviar mensaje a la conversación ${conversationId}`
-        );
+      console.log("Datos recibidos en el servidor:", data);
 
-        const newMessage = {
-          sender: message.sender,
-          recipient: message.recipient,
-          content: message.content,
-          type: message.type,
-          timestamp: message.timestamp,
-        };
+  const { conversationId, message } = data;
 
-        const updatedConversation = await Conversation.findByIdAndUpdate(
-          conversationId,
-          {
-            $push: { messages: newMessage },
-            lastMessage: newMessage.content,
-          },
-          { new: true }
-        );
-
-        if (!updatedConversation) {
-          throw new Error("Conversación no encontrada");
-        }
-
-        // Incrementar el conteo de mensajes no leídos del destinatario
-        await Usuario.findByIdAndUpdate(message.recipient, {
-          $inc: { [`unreadMessages.${conversationId}`]: 1 },
-        });
-
-        io.to(conversationId).emit("receiveMessage", newMessage);
-        console.log(
-          `Mensaje enviado correctamente a la conversación ${conversationId}`
-        );
-      } catch (error) {
-        console.error(
-          `Error al enviar el mensaje a la conversación ${conversationId}: ${error}`
-        );
-      }
+  // Validar los datos
+  if (!conversationId || !message || !message.sender || !message.recipient || !message.content) {
+    console.error("Datos insuficientes para enviar mensaje. Faltan uno o más campos:", {
+      conversationId,
+      message,
     });
+    return;
+  }
 
-    // Manejar la desconexión de los usuarios
-    socket.on("disconnect", () => {
-      console.log(`Usuario desconectado: ${socket.id}`);
-    });
+  try {
+    // Buscar conversación por ID
+    let conversation = await Conversation.findById(conversationId);
+
+    // Si no existe, crear una nueva conversación
+    if (!conversation) {
+      console.log("La conversación no existe. Creando una nueva.");
+      conversation = new Conversation({
+        participants: [message.sender, message.recipient],
+        messages: [],
+        lastMessage: "",
+      });
+      await conversation.save();
+    }
+
+    // Crear el nuevo mensaje
+    const newMessage = {
+      sender: message.sender,
+      recipient: message.recipient,
+      content: message.content,
+      type: message.type || "text", // Por defecto 'text'
+      timestamp: message.timestamp || Date.now(),
+    };
+
+    // Guardar el mensaje en la conversación
+    await saveMessage(conversation, newMessage);
+
+    // Emitir el mensaje al remitente y al destinatario
+    socket.emit("receiveMessage", newMessage); // Para el remitente
+    socket.to(message.recipient).emit("receiveMessage", newMessage); // Para el destinatario
+  } catch (error) {
+    console.error("Error al enviar el mensaje:", error);
+  }
+};
+
+// Función para guardar el mensaje en la conversación
+const saveMessage = async (conversation, message) => {
+  conversation.messages.push(message); // Agregar el mensaje a la conversación
+  console.log("Mensaje guardado en la conversación:", message);
+  conversation.lastMessage = message.content; // Actualizar el último mensaje
+  await conversation.save(); // Guardar los cambios
+};
+
+    // Escuchar evento de enviar mensaje
+    socket.on("sendMessage", (data) => sendMessage(socket, data));
   });
 };
 
