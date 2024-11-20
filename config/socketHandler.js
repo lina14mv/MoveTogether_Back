@@ -142,6 +142,7 @@ const socketHandler = (server, allowedOrigins) => {
     // Emitir el mensaje al remitente y al destinatario
     socket.emit("receiveMessage", newMessage); // Para el remitente
     socket.to(message.recipient).emit("receiveMessage", newMessage); // Para el destinatario
+    socket.to(conversation._id).emit("receiveMessage", newMessage); // Para todos los participantes de la conversación
   } catch (error) {
     console.error("Error al enviar el mensaje:", error);
   }
@@ -150,7 +151,7 @@ const socketHandler = (server, allowedOrigins) => {
 // Función para guardar el mensaje en la conversación
 const saveMessage = async (conversation, message) => {
   conversation.messages.push(message); // Agregar el mensaje a la conversación
-  console.log("Mensaje guardado en la conversación:", message);
+  console.log("Mensaje a guardar en la conversación:", message);
   conversation.lastMessage = message.content; // Actualizar el último mensaje
   await conversation.save(); // Guardar los cambios
 };
