@@ -110,14 +110,14 @@ const socketHandler = (server, allowedOrigins) => {
     // Función para guardar el mensaje en la conversación
     const saveMessage = async (conversation, message) => {
       conversation.messages.push(message); // Agregar el mensaje a la conversación
-      console.log("Mensaje a guardar en la conversación:", message);
+      //console.log("Mensaje a guardar en la conversación:", message);
       conversation.lastMessage = message.content; // Actualizar el último mensaje
       await conversation.save(); // Guardar los cambios
     };
 
      // Función para enviar mensajes
      const sendMessage = async (socket, data) => {
-      console.log("Datos recibidos en el servidor:", data);
+      //console.log("Datos recibidos en el servidor:", data);
 
       const { conversationId, message } = data;
 
@@ -181,7 +181,7 @@ const socketHandler = (server, allowedOrigins) => {
         // Enviar mensaje al remitente (para confirmar)
         socket.emit("receiveMessage", newMessage);
 
-        console.log("Mensaje enviado correctamente.", newMessage);
+        //console.log("Mensaje enviado correctamente.", newMessage);
       } catch (error) {
         console.error("Error al enviar el mensaje:", error);
       }
