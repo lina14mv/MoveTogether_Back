@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 // Definir el esquema del Post
 const PostSchema = new Schema(
   {
+    title: {
+      type: String,
+      required: true,
+    },
     content: {
       type: String,
       required: true,
@@ -50,4 +54,4 @@ const PostSchema = new Schema(
 );
 
 // Exportar el modelo
-module.exports = mongoose.model("Post", PostSchema);
+module.exports = mongoose.model("Posts", PostSchema);

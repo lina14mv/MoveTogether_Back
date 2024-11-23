@@ -6,7 +6,7 @@ const mongoose = require("mongoose"); // Importar Mongoose
 const connectDB = require("./config/db.config.js"); // Importar función de conexión a la BD
 const cors = require("cors"); // Importar CORS
 const socketHandler = require("./config/socketHandler.js"); // Importar configuración de Socket.IO
-const rutas = require("./src/rutas/indexRutas.js"); // Importar rutas
+const rutas = require("./src/rutas/indexRutas.js"); // Importar rautas
 
 const app = express();
 const server = require("http").createServer(app);
@@ -20,6 +20,7 @@ connectDB();
 const allowedOrigins = [
   "http://localhost:5173", // Origen local para desarrollo
   "http://localhost:3000",
+  "http://localhost:3004",
   "https://movetogether.netlify.app", // Origen de tu frontend desplegado
 ];
 const corsOptions = {
@@ -40,6 +41,11 @@ app.use(cors(corsOptions));
 // Configuración de Express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//pruebaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+app.get("/test", (req, res) => {
+  res.sendFile(path.join(__dirname, "prueba.html")); // Ruta al archivo HTML
+});
 
 // Importar rutas
 app.get("/", (req, res) => {

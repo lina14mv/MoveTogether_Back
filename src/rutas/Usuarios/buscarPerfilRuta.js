@@ -5,7 +5,7 @@ const {
 } = require("../../controladores/Usuarios/buscarPerfil");
 const { validationResult, query } = require("express-validator");
 
-const verificarToken = require("../../middlewares/varificarToken.cjs");
+const verificarToken = require("../../middlewares/varificarToken.js");
 
 // Ruta para obtener el perfil del usuario por correo electrónico
 router.get("/buscarPerfil", verificarToken, (req, res, next) => {
