@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   obtenerPublicaciones,
 } = require("../../controladores/Posts/publicacionesUsuario");
-const verificarToken = require("../../middlewares/varificarToken.cjs");
+const verificarToken = require("../../middlewares/varificarToken.js");
 const { validationResult } = require("express-validator");
 
 router.get("/usuarios/publicaciones", verificarToken, (req, res) => {

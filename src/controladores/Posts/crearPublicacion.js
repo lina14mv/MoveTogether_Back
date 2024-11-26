@@ -8,26 +8,17 @@ exports.createPost = async (req, res) => {
     const author = req.user.id; // Obtener el ID del autor desde req.user
 
     // Verificar que al menos haya contenido o una imagen
-    if (!content && (!req.files || req.files.length === 0)) {
+    if (!content && !image) {
       return res
         .status(400)
-        .json({
-          message: "Se requiere contenido o una imagen para la publicación.",
-        });
-    }
-
-    // Verificar que se haya proporcionado un título
-    if (!title) {
-      return res.status(400).json({ message: "El título es obligatorio." });
+        .json({message: "Se requiere contenido o una imagen para la publicación."});
     }
 
     // Crear un nuevo post
     const newPost = new Post({
-      title, // Asegúrate de que el título se guarde en la base de datos
       content,
       author,
-      image: req.files && req.files.length > 0 ? req.files[0].path : null,
-      date: new Date()
+      image,
     });
 
     // Guardar el post en la base de datos

@@ -66,6 +66,9 @@ router.use("/api", actualizarPost);
 router.use("/api", uploadRuta);
 router.use("/api", chat);
 router.use("/api", conversacion);
-
+router.use("/api", ultimoMensaje);
+router.use("/api", crearComunidad);
+router.use("/api", unirseComunidad);
+router.use("/api", osrmRuta);
 
 module.exports = router;

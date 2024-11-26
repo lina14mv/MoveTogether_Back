@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { obtenerFeed } = require("../../controladores/Posts/feed");
-const verificarToken = require("../../middlewares/varificarToken.cjs");
+const verificarToken = require("../../middlewares/varificarToken.js");
 const { validationResult } = require("express-validator");
 
 router.get("/posts/feed/", verificarToken, (req, res) => {

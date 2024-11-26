@@ -1,5 +1,5 @@
 const express = require("express");
-const verificarToken = require("../../middlewares/varificarToken.cjs");
+const verificarToken = require("../../middlewares/varificarToken.js");
 const ultimoMensaje = require("../../controladores/Mensajes/ultimomensaje");
 
 const router = express.Router();

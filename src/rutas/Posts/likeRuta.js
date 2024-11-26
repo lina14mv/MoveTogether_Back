@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const likePost = require('../../controladores/Posts/like'); 
-const verificarToken = require('../../middlewares/varificarToken.cjs');
+const verificarToken = require('../../middlewares/varificarToken.js');
 const { validationResult } = require('express-validator'); 
 
 router.post('/:postId/like', verificarToken, (req, res) => {

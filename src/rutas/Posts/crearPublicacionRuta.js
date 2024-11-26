@@ -1,6 +1,6 @@
 const express = require("express");
 const postController = require("../../controladores/Posts/crearPublicacion");
-const verificarToken = require("../../middlewares/varificarToken.cjs");
+const verificarToken = require("../../middlewares/varificarToken.js");
 const { validationResult } = require("express-validator");
 
 const router = express.Router();

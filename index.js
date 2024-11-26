@@ -6,7 +6,7 @@ const mongoose = require("mongoose"); // Importar Mongoose
 const connectDB = require("./config/db.config.js"); // Importar función de conexión a la BD
 const cors = require("cors"); // Importar CORS
 const socketHandler = require("./config/socketHandler.js"); // Importar configuración de Socket.IO
-const rutas = require("./src/rutas/indexRutas.js"); // Importar rautas
+const rutas = require("./src/rutas/indexRutas.js"); // Importar rutas
 
 const app = express();
 const server = require("http").createServer(app);
