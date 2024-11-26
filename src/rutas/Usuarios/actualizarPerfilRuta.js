@@ -4,7 +4,7 @@ const {
   updateUserProfileByEmail,
 } = require("../../controladores/Usuarios/actualizarPerfil");
 const { body, validationResult } = require("express-validator");
-const verificarToken = require("../../middlewares/varificarToken.cjs");
+const verificarToken = require("../../middlewares/varificarToken.js");
 
 // Validaciones para los campos de actualización (puedes ajustar según sea necesario)
 const updateValidator = [
@@ -47,22 +47,27 @@ const updateValidator = [
 ];
 
 // Ruta para actualizar el perfil del usuario
-router.put("/actualizarPerfil", verificarToken, updateValidator, (req, res, next) => {
-  const errors = validationResult(req);
-  
-  // Si hay errores de validación, devolverlos
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+router.put(
+  "/actualizarPerfil",
+  verificarToken,
+  updateValidator,
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    // Si hay errores de validación, devolverlos
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Si hay errores de validación, devolverlos
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Llamar a la función de actualización con los datos de la solicitud
+    updateUserProfileByEmail(req, res)
+      .then((response) => res.json(response))
+      .catch((error) => next(error));
   }
-
- // Si hay errores de validación, devolverlos
- if (!errors.isEmpty()) {
-  return res.status(400).json({ errors: errors.array() });
-}
-
-// Llamar a la función de actualización con los datos de la solicitud
-updateUserProfileByEmail(req, res)
-  .then(response => res.json(response))
-  .catch(error => next(error));
-});
+);
 module.exports = router;

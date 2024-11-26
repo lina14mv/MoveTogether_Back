@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interactivo con OSRM</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+    button {
+      margin: 10px 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Selecciona tu Ruta en el Mapa</h1>
+  <p>Haz clic en el mapa para seleccionar el <b>origen</b> y el <b>destino</b>. Luego, haz clic en "Calcular Ruta".</p>
+  <button id="clearMarkers">Limpiar Selección</button>
+  <button id="calculateRoute" disabled>Calcular Ruta</button>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Inicializar el mapa
+    const map = L.map("map").setView([40.7128, -74.006], 13);
+
+    // Agregar capa base de OpenStreetMap
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Variables para origen, destino y marcadores
+    let origin = null;
+    let destination = null;
+    let originMarker = null;
+    let destinationMarker = null;
+    let routeLayer = null;
+
+    const calculateRouteButton = document.getElementById("calculateRoute");
+    const clearMarkersButton = document.getElementById("clearMarkers");
+
+    // Función para habilitar el botón "Calcular Ruta"
+    const updateCalculateButton = () => {
+      calculateRouteButton.disabled = !(origin && destination);
+    };
+
+    // Evento para manejar clics en el mapa
+    map.on("click", (e) => {
+      if (!origin) {
+        // Establecer origen
+        origin = [e.latlng.lng, e.latlng.lat];
+        originMarker = L.marker(e.latlng, { draggable: true })
+          .addTo(map)
+          .bindPopup("Origen")
+          .openPopup();
+
+        originMarker.on("dragend", (event) => {
+          origin = [event.target.getLatLng().lng, event.target.getLatLng().lat];
+          console.log("Nuevo origen:", origin);  // Mostrar en consola
+        });
+
+        console.log("Origen seleccionado:", origin);  // Mostrar en consola
+      } else if (!destination) {
+        // Establecer destino
+        destination = [e.latlng.lng, e.latlng.lat];
+        destinationMarker = L.marker(e.latlng, { draggable: true })
+          .addTo(map)
+          .bindPopup("Destino")
+          .openPopup();
+
+        destinationMarker.on("dragend", (event) => {
+          destination = [event.target.getLatLng().lng, event.target.getLatLng().lat];
+          console.log("Nuevo destino:", destination);  // Mostrar en consola
+        });
+
+        console.log("Destino seleccionado:", destination);  // Mostrar en consola
+      } else {
+        alert("Ya seleccionaste el origen y el destino. Usa 'Limpiar Selección' para empezar de nuevo.");
+      }
+
+      updateCalculateButton();
+    });
+
+    // Limpiar selección
+    clearMarkersButton.addEventListener("click", () => {
+      if (originMarker) map.removeLayer(originMarker);
+      if (destinationMarker) map.removeLayer(destinationMarker);
+      if (routeLayer) map.removeLayer(routeLayer);
+
+      origin = null;
+      destination = null;
+      originMarker = null;
+      destinationMarker = null;
+      routeLayer = null;
+
+      updateCalculateButton();
+    });
+
+    // Calcular ruta
+    calculateRouteButton.addEventListener("click", async () => {
+      if (!origin || !destination) return;
+
+      console.log("Origen:", origin);  // Mostrar en consola
+      console.log("Destino:", destination);  // Mostrar en consola
+
+      // Preparar solicitud
+      const requestData = { origin, destination, waypoints: [] };
+
+      try {
+        const response = await fetch("http://localhost:3004/api/ruta/mapa", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Dibujar la ruta en el mapa
+          if (routeLayer) map.removeLayer(routeLayer);
+
+          routeLayer = L.geoJSON(data.geometry, {
+            style: {
+              color: "blue",
+              weight: 4,
+              opacity: 0.7,
+            },
+          }).addTo(map);
+
+          // Ajustar la vista del mapa a la ruta
+          map.fitBounds(routeLayer.getBounds());
+        } else {
+          alert(data.error || "Error al calcular la ruta.");
+        }
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    });
+  </script>
+</body>
+</html>

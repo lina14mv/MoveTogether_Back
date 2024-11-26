@@ -6,8 +6,8 @@ const crearUsuario = require("./Registro/crearUsuarioRuta.js");
 const login = require("./Registro/loginRuta.js");
 const verificarCodigo = require("./Registro/verificarCodigoRuta.js");
 const cambiarContrasenia = require("./Registro/cambiarContraseniaRuta.js");
-const logout = require('./Registro/logoutRuta.js');
-const proteccion = require('./Registro/protecRutas');
+const logout = require("./Registro/logoutRuta.js");
+const proteccion = require("./Registro/protecRutas");
 
 //Rutas de Usuarios
 const buscarPorNombre = require("./Usuarios/buscarPorNombreRuta.js");
@@ -37,6 +37,13 @@ const listarAmigos = require("./Amigos/listarAmigosRuta.js");
 //Imagenes
 const uploadRuta = require("./Imagenes/uploadRuta.js");
 
+//comunidades
+const crearComunidad = require("./Comunidades/crearComunidadRuta.js");
+const unirseComunidad = require("./Comunidades/unirseComunidadRuta.js");
+
+// Mapas
+const osrmRuta = require("./Mapa/osrmRuta.js");
+
 router.use("/api", crearUsuario);
 router.use("/api", verificarCodigo);
 router.use("/api", login);
@@ -59,8 +66,6 @@ router.use("/api", actualizarPost);
 router.use("/api", uploadRuta);
 router.use("/api", chat);
 router.use("/api", conversacion);
-router.use("/api", ultimoMensaje);
-
 
 
 module.exports = router;
