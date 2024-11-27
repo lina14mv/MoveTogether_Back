@@ -40,6 +40,8 @@ const uploadRuta = require("./Imagenes/uploadRuta.js");
 //comunidades
 const crearComunidad = require("./Comunidades/crearComunidadRuta.js");
 const unirseComunidad = require("./Comunidades/unirseComunidadRuta.js");
+const listarComunidades = require("./Comunidades/obtenerComunidadesRuta.js");
+const actualizarComunidad = require("./Comunidades/actualizarComunidadRuta.js");
 
 // Mapas
 const osrmRuta = require("./Mapa/osrmRuta.js");
@@ -70,5 +72,7 @@ router.use("/api", ultimoMensaje);
 router.use("/api", crearComunidad);
 router.use("/api", unirseComunidad);
 router.use("/api", osrmRuta);
+router.use("/api", listarComunidades);
+router.use("/api", actualizarComunidad);
 
 module.exports = router;
