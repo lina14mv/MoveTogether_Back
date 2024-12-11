@@ -26,7 +26,9 @@ const allowedOrigins = [
 ];
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }    
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = "El CORS policy no permite el acceso desde este origen.";
       return callback(new Error(msg), false);
@@ -38,8 +40,6 @@ const corsOptions = {
   optionsSuccessStatus: 200, // Para navegadores antiguos que requieren un status 200 en lugar de 204
 };
 app.use(cors(corsOptions));
-app.get('/favicon.ico', (req, res) => res.status(204).end()); // Para evitar errores de favicon en el navegador con el despliegue en ralway
-
 
 // Configuración de Express
 app.use(express.json());
@@ -58,16 +58,21 @@ app.get("/", (req, res) => {
 app.use(rutas);
 
 // Manejo de rutas no encontradas
-app.use((req, res) => {
-  res.status(404).send("Ruta no encontrada");
+app.use((req, res, next) => {
+  if (req.method === "GET" && req.url === "/favicon.ico") {
+    res.status(204).end();
+  } else {
+    res.status(404).json({ error: "Ruta no encontrada" });
+  }
 });
+
 
 // Inicializar Socket.IO
 socketHandler(server, allowedOrigins);
 
 // Servidor
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(
-    `--------> Backend escuchando en http://localhost:${PORT} <--------`
+    `--------> Backend escuchando en http://0.0.0.0:${PORT} <--------`
   );
 });
