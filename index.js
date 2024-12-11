@@ -11,7 +11,7 @@ const rutas = require("./src/rutas/indexRutas.js"); // Importar rutas
 const app = express();
 const server = require("http").createServer(app);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Conexión a la base de datos
 connectDB();
@@ -38,6 +38,8 @@ const corsOptions = {
   optionsSuccessStatus: 200, // Para navegadores antiguos que requieren un status 200 en lugar de 204
 };
 app.use(cors(corsOptions));
+app.get('/favicon.ico', (req, res) => res.status(204).end()); // Para evitar errores de favicon en el navegador con el despliegue en ralway
+
 
 // Configuración de Express
 app.use(express.json());
