@@ -22,6 +22,11 @@ const PostSchema = new Schema(
         ref: "Usuario",
       },
     ],
+    comunidad: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comunidad",
+      required: false,
+    },
   },
   {
     timestamps: true, 

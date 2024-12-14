@@ -42,9 +42,16 @@ const crearComunidad = require("./Comunidades/crearComunidadRuta.js");
 const unirseComunidad = require("./Comunidades/unirseComunidadRuta.js");
 const listarComunidades = require("./Comunidades/obtenerComunidadesRuta.js");
 const actualizarComunidad = require("./Comunidades/actualizarComunidadRuta.js");
-
+const verComunidad = require("./Comunidades/verComunidadRuta.js");
+const filtrarComunidades = require("./Comunidades/filtrarComunidadesRuta.js");
 // Mapas
 const osrmRuta = require("./Mapa/osrmRuta.js");
+
+//Eventos
+const crearEvento = require("./Eventos/crearEventoRuta.js");
+const verEventosUser = require("./Eventos/verEventosUsuarioRuta.js");
+const elimiarEvento = require("./Eventos/eliminarEventoRuta.js");
+const feedEvento = require("./Eventos/feedEventoRuta.js");
 
 router.use("/api", crearUsuario);
 router.use("/api", verificarCodigo);
@@ -74,5 +81,11 @@ router.use("/api", unirseComunidad);
 router.use("/api", osrmRuta);
 router.use("/api", listarComunidades);
 router.use("/api", actualizarComunidad);
+router.use("/api", crearEvento);
+router.use("/api", verComunidad);
+router.use("/api", verEventosUser);
+router.use("/api", elimiarEvento);
+router.use("/api", feedEvento);
+router.use("/api", filtrarComunidades);
 
 module.exports = router;

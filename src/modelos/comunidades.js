@@ -24,6 +24,11 @@ const ComunidadSchema = new Schema({
       ref: "Post",
     },
   ],
+  eventos: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Evento",
+  },
+],
   fechaCreacion: {
     type: Date,
     default: Date.now,
