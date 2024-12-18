@@ -33,6 +33,7 @@ const ultimoMensaje = require("./Chat/ultimoMensajeRuta.js");
 const agregarAmigo = require("./Amigos/agregarAmigoRuta.js");
 const eliminarAmigo = require("./Amigos/eliminarAmigoRuta.js");
 const listarAmigos = require("./Amigos/listarAmigosRuta.js");
+const perfilAmigos = require("./Amigos/perfilAmigoRuta.js");
 
 //Imagenes
 const uploadRuta = require("./Imagenes/uploadRuta.js");
@@ -87,5 +88,6 @@ router.use("/api", verEventosUser);
 router.use("/api", elimiarEvento);
 router.use("/api", feedEvento);
 router.use("/api", filtrarComunidades);
+router.use("/api", perfilAmigos);
 
 module.exports = router;

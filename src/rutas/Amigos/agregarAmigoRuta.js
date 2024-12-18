@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const agregarAmigo = require("../../controladores/Amigos/agregarAmigo");
+const verificarToken = require("../../middlewares/varificarToken.js");
 
-// Ruta para agregar nuevo amigo
-router.post("/agregar/amigo", agregarAmigo);
+router.post("/agregar/amigo/:amigoId", verificarToken, agregarAmigo);
 
 module.exports = router;

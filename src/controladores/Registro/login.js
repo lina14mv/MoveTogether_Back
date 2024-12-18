@@ -51,6 +51,7 @@ const loginController = async (req, res) => {
     return res.json({
       mensaje: "Inicio de sesión exitoso",
       token: token,
+      userId: usuario._id,
     });
   } catch (error) {
     return res.status(500).json({ mensaje: "Error del servidor", error });
