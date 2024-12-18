@@ -2,7 +2,7 @@ const Usuario = require("../../modelos/usuarios");
 const Comunidad = require("../../modelos/comunidades");
 
 // Buscar usuarios y comunidades por nombre
-const searchByName = async (req, res) => {
+const busquedaGeneral = async (req, res) => {
   try {
     const { name } = req.query;
 
@@ -32,5 +32,5 @@ const searchByName = async (req, res) => {
 };
 
 module.exports = {
-  searchByName,
+  busquedaGeneral,
 };
