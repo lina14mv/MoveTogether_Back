@@ -14,6 +14,7 @@ const buscarPorNombre = require("./Usuarios/buscarPorNombreRuta.js");
 const buscarPerfil = require("./Usuarios/buscarPerfilRuta.js");
 const actualizarPerfil = require("./Usuarios/actualizarPerfilRuta.js");
 const fotoPerfil = require("./Usuarios/fotoPerfilRuta.js");
+const busquedageneral = require("./Usuarios/busquedaGeneralRuta.js");
 
 //posts
 const crearPublicacion = require("./Posts/crearPublicacionRuta.js");
@@ -27,7 +28,6 @@ const likePost = require("./Posts/likeRuta.js");
 const chat = require("./Chat/chatRuta.js");
 const conversacion = require("./Chat/conversacionRuta.js");
 const ultimoMensaje = require("./Chat/ultimoMensajeRuta.js");
-
 
 //Amigos
 const agregarAmigo = require("./Amigos/agregarAmigoRuta.js");
@@ -89,5 +89,6 @@ router.use("/api", elimiarEvento);
 router.use("/api", feedEvento);
 router.use("/api", filtrarComunidades);
 router.use("/api", perfilAmigos);
+router.use("/api", busquedageneral);
 
 module.exports = router;

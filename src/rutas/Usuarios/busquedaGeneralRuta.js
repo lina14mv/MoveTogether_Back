@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   busquedaGeneral,
 } = require("../../controladores/Usuarios/busquedaGeneral");
-const verificarToken = require("../../middlewares/verificarToken.js");
+const verificarToken = require("../../middlewares/varificarToken.js");
 const { validationResult, query } = require("express-validator");
 
 // Validación de los parámetros de consulta
